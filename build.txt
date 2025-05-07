@@ -1,0 +1,3 @@
+displayName = Pacny's Refresh
+author = Pacnysam
+version = 0.1

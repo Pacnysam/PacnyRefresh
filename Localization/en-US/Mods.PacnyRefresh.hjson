@@ -1,0 +1,10 @@
+Configs: {
+	GraphicsConfig: {
+		DisplayName: Graphics Config
+
+		ShakeIntensity: {
+			Label: Screenshake
+			Tooltip: Screenshake Intensity
+		}
+	}
+}
