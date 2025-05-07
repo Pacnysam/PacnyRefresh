@@ -42,11 +42,12 @@ namespace PacnyRefresh.Core.Bases.Projectiles
         }
     }
     
-    public abstract class BaseFlailProjectile(float throwRange = 180, float fallSpeed = 1.2f, float throwSpeed = 18f, bool doRotation = true, float swingDistance = 30/*, float killDistance = 800 */) : ModProjectile 
+    public abstract class BaseFlailProjectile(float throwRange = 180, float fallSpeed = 1.2f, float throwSpeed = 18f, float swingSpeed = 10f, bool doRotation = true, float swingDistance = 30/*, float killDistance = 800 */) : ModProjectile 
     {
         public float throwRange = throwRange;
         public float fallSpeed = fallSpeed;
         public float throwSpeed = throwSpeed;
+        public float swingSpeed = swingSpeed;
         public bool doRotation = doRotation;
         public float swingDistance = swingDistance;
         //public float killDistance = killDistance;
@@ -159,7 +160,7 @@ namespace PacnyRefresh.Core.Bases.Projectiles
                             }
                         }
                         Projectile.localAI[1] += 1f;
-                        Vector2 vector4 = new Vector2(player.direction).RotatedBy((float)Math.PI * 10f * (Projectile.localAI[1] / 60f) * (float)player.direction);
+                        Vector2 vector4 = new Vector2(player.direction).RotatedBy((float)Math.PI * swingSpeed * (Projectile.localAI[1] / 60f) * (float)player.direction);
                         vector4.Y *= 0.8f;
                         if (vector4.Y * player.gravDir > 0f)
                         {
@@ -349,7 +350,7 @@ namespace PacnyRefresh.Core.Bases.Projectiles
                 Vector2 mountedCenter = Main.player[Projectile.owner].MountedCenter;
                 Vector2 vector = targetHitbox.ClosestPointInRect(mountedCenter) - mountedCenter;
                 vector.Y /= 0.8f;
-                float num = swingDistance + projHitbox.Width/2;
+                float num = swingDistance + projHitbox.Width;
                 return vector.Length() <= num;
             }
             return base.Colliding(projHitbox, targetHitbox);

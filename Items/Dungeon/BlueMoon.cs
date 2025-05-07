@@ -46,7 +46,7 @@ namespace PacnyRefresh.Items.Dungeon
     
     public class BlueMoonP : BaseFlailProjectile 
     {
-        public BlueMoonP() : base(330, 2.2f, 24f, false, 40) { }
+        public BlueMoonP() : base(330, 2.2f, 24f, 2.5f, false, 40) { }
         
         private static Asset<Texture2D> glowTex;
         public override void Load()
@@ -99,6 +99,10 @@ namespace PacnyRefresh.Items.Dungeon
             Charge++;
 
             if (Charge > 100) Charge = 100;
+
+            throwRange = Math.Clamp(Charge * 4, 220, 360);
+            swingDistance = 10 + (int)(Charge / 2);
+            swingSpeed = 2.5f + (Charge / 20);
 
             if (Charge == CHARGETIME && Main.myPlayer == Projectile.owner)
             {
@@ -163,6 +167,8 @@ namespace PacnyRefresh.Items.Dungeon
                 SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
             }
         }
+
+        
 
         /*public override void ApexEffect(Player player)
         {
@@ -235,9 +241,9 @@ namespace PacnyRefresh.Items.Dungeon
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
             Vector2 drawOrigin = new(texture.Width * 0.5f, Projectile.height * 0.5f);
-            Main.spriteBatch.Draw(texture, Projectile.position - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(texture, Projectile.position - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(Request<Texture2D>("PacnyRefresh/Items/Dungeon/WaterBurstGlow").Value, Projectile.position - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(Request<Texture2D>("PacnyRefresh/Items/Dungeon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
     }
