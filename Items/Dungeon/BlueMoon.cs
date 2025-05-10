@@ -32,7 +32,10 @@ namespace PacnyRefresh.Items.Dungeon
         }*/
 
         public override bool InstancePerEntity => true;
-
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+        {
+            return entity.type == ItemID.BlueMoon;
+        }
         public override void SetDefaults(Item entity)
         {
             if (entity.type == ItemID.BlueMoon)
