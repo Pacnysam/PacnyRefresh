@@ -388,6 +388,8 @@ namespace PacnyRefresh.Items.Gem
             public override bool InstancePerEntity => true;
             public static readonly int[] gemBolts = [ProjectileID.AmethystBolt, ProjectileID.TopazBolt, ProjectileID.SapphireBolt, ProjectileID.EmeraldBolt, ProjectileID.RubyBolt, ProjectileID.DiamondBolt, ProjectileID.AmberBolt];
 
+            public float rottime = 0;
+            
             public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
             {
                 return gemBolts.Contains(entity.type);
@@ -463,10 +465,10 @@ namespace PacnyRefresh.Items.Gem
 
                     float targetDistance = 8000f;
                     int target = -1;
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < 200; i++)
                     {
                         float range = Vector2.Distance(projectile.Center, Main.npc[i].Center);
-                        if (range < targetDistance && range < homingRange && Main.npc[i].CanBeChasedBy(projectile, false))
+                        if (range < targetDistance && range < homingRange && Main.npc[i].active && Main.npc[i].CanBeChasedBy(projectile, false))
                         {
                             target = i;
                             targetDistance = range;
@@ -482,10 +484,10 @@ namespace PacnyRefresh.Items.Gem
 
                     if (targetDistance > homingRange)
                     {
-                        projectile.velocity.Y += (float)Math.Sin((PacnySystem.rottime + projectile.ai[0]) * 8) * Math.Clamp(projectile.GetGlobalProjectile<PacnyProjectile>().counter * 0.1f, 0f, 1.5f);
+                        projectile.velocity.Y += (float)Math.Sin((rottime + projectile.ai[0]) * 8) * Math.Clamp(projectile.GetGlobalProjectile<PacnyProjectile>().counter * 0.1f, 0f, 1.5f);
                     }
                     else
-                        projectile.velocity.Y += (float)Math.Sin((PacnySystem.rottime + projectile.ai[0]) * 6) * 0.5f;
+                        projectile.velocity.Y += (float)Math.Sin((rottime + projectile.ai[0]) * 6) * 0.5f;
                 }
                 return base.PreAI(projectile);
             }
@@ -550,6 +552,9 @@ namespace PacnyRefresh.Items.Gem
 
             public override void PostAI(Projectile projectile)
             {
+                rottime += (float)Math.PI / 60;
+                if (rottime >= Math.PI * 2) rottime = 0;
+
                 if (projectile.type == ProjectileID.AmethystBolt) 
                 {
                     projectile.velocity = projectile.velocity.Length() * Vector2.Lerp(projectile.velocity, projectile.DirectionTo(Main.MouseWorld) * projectile.velocity.Length() * 0.5f, 0.2f).SafeNormalize(Vector2.Normalize(projectile.velocity));
