@@ -8,3 +8,10 @@ Configs: {
 		}
 	}
 }
+
+Buffs: {
+	AmberStun: {
+		DisplayName: Amber Stun
+		Description: Mods.PacnyRefresh.Buffs.AmberStun.Description
+	}
+}

@@ -45,6 +45,25 @@ namespace PacnyRefresh.Items.Dungeon
                 entity.width = 34; entity.height = 32;
             }
         }
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            string[] text =
+                [
+                    Language.GetTextValue("Mods.PacnyRefresh.VanillaItemTooltips.BlueMoon")
+                ];
+
+            TooltipLine knockbackTooltip = tooltips.Find(n => n.Name == "Knockback");
+
+            if (knockbackTooltip != null)
+            {
+                int index = tooltips.IndexOf(knockbackTooltip);
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (text[i] != string.Empty)
+                        tooltips.Insert(index + 1, new TooltipLine(Mod, "BlueMoonTooltip", text[i]));
+                }
+            }
+        }
     }
     
     public class BlueMoonP : BaseFlailProjectile 
@@ -111,6 +130,8 @@ namespace PacnyRefresh.Items.Dungeon
             {
                 SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.position);
 
+                Projectile.damage = (int)(Projectile.damage * 1.5f);
+
                 for (float k = 0; k < 6.28f; k += 6.28f / 40)
                 {
                     Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, ColorHelper.AdditiveWhite, 2.5f);
@@ -155,7 +176,7 @@ namespace PacnyRefresh.Items.Dungeon
                             newVelocity = new Vector2(Projectile.velocity.X * 0.3f, Projectile.velocity.Y) + new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-7f, 5f));
                         }
 
-                        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, newVelocity, ProjectileID.WaterBolt, (int)(Projectile.damage * 0.65f), 0, player.whoAmI, 3);
+                        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, newVelocity, ProjectileID.WaterBolt, (int)(Projectile.damage * 0.5f), 0, player.whoAmI, 3);
                         proj.GetGlobalProjectile<PacnyProjectile>().gravity = 0.55f;
                         proj.DamageType = DamageClass.Melee;
                     }
@@ -191,24 +212,7 @@ namespace PacnyRefresh.Items.Dungeon
                     Main.spriteBatch.Draw(glowTex.Value, drawPos, null, color * (0.55f - (k * 0.075f)), Projectile.oldRot[k], drawOrigin, (Projectile.scale * (1.15f - (k * 0.075f))) /* * 0.07f*/, SpriteEffects.None, 0f);
                 }
             }
-
-            /*Texture2D texture = TextureAssets.Projectile[Type].Value;
-            Rectangle frame = new(0, texture.Height / Main.projFrames[Type] * Projectile.frame, texture.Width, (texture.Height / Main.projFrames[Type]) - 2);
-
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-            return false;*/
             return true;
-
-            /*Vector2 drawOrigin = new(tex.Width() * 0.5f, Projectile.height * 0.5f);
-            for (int k = 0; k < Projectile.oldPos.Length; k++)
-            {
-                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
-                Main.spriteBatch.Draw(texture, drawPos, null, Color.White * (1.0f - (0.08f * k)), Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            }
-
-            Texture2D glowTex = Request<Texture2D>("GoldLeaf/Items/Nightshade/VampireBatGlowOutline").Value;
-            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, ColorHelper.AdditiveWhite * 0.5f, Projectile.rotation, new Vector2(0, -8) + glowTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
-            return true;*/
         }
     }
 
@@ -229,7 +233,7 @@ namespace PacnyRefresh.Items.Dungeon
 
         public override void AI()
         {
-            if (++Projectile.frameCounter >= 4)
+            if (++Projectile.frameCounter >= 3)
             {
                 if (Projectile.frame >= 9)
                     Projectile.Kill();

@@ -48,8 +48,8 @@ namespace PacnyRefresh.Core //most of this is snatched from starlight river and 
             return false;
         }
 
-        public static string EmptyTexString => "GoldLeaf/Textures/Empty";
-        public static Texture2D EmptyTex => Request<Texture2D>("GoldLeaf/Textures/Empty").Value;
+        public static string EmptyTexString => "PacnyRefresh/Textures/Empty";
+        public static Texture2D EmptyTex => Request<Texture2D>("PacnyRefresh/Textures/Empty").Value;
 
         public static string SetBonusKey => Language.GetTextValue(Main.ReversedUpDownArmorSetBonuses ? "Key.UP" : "Key.DOWN");
         public static string SetBonusSecondaryKey() => Language.GetTextValue(Main.ReversedUpDownArmorSetBonuses ? "Key.DOWN" : "Key.UP");

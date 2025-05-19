@@ -17,23 +17,78 @@ using System.Threading;
 using System.IO;
 using Terraria.ModLoader.IO;
 using System.Linq;
+using static PacnyRefresh.Core.Helper;
+using static PacnyRefresh.Core.ColorHelper;
 using Mono.Cecil;
+using PacnyRefresh.Core;
+using ReLogic.Content;
+using PacnyRefresh.Effects.Dusts;
 
 namespace PacnyRefresh.Items.Gem
 {
-    /*public class GemStaffReworkItem : GlobalItem
+    public class GemStaffSystem : ModSystem
+    {
+        public override void PostSetupContent()
+        {
+            foreach (int item in GemStaffReworkItem.gemStaves)
+            {
+                TextureAssets.Item[item] = Request<Texture2D>($"PacnyRefresh/Items/Gem/{ItemID.Search.GetName(item)}");
+            }
+        }
+
+        public override void Unload()
+        {
+            foreach (int item in GemStaffReworkItem.gemStaves)
+            {
+                TextureAssets.Item[item] = Request<Texture2D>($"Terraria/Images/Item_{item}");
+            }
+        }
+
+        public override void PostAddRecipes()
+        {
+            for (int i = 0; i < Recipe.numRecipes; i++)
+            {
+                Recipe recipe = Main.recipe[i];
+
+                if (recipe.HasIngredient(ItemID.FossilOre) && recipe.HasIngredient(ItemID.Amber) && recipe.HasTile(TileID.Anvils) && recipe.HasResult(ItemID.AmberStaff))
+                {
+                    recipe.RemoveIngredient(ItemID.Amber);
+                    recipe.AddIngredient(ItemID.Obsidian, 10);
+                    recipe.AddIngredient(ItemID.Amber, 8);
+                }
+            }
+        }
+    }
+
+    public class GemStaffPlayer : ModPlayer
+    {
+        public int sapphireHits;
+
+        public override void PostUpdateMiscEffects()
+        {
+            if (sapphireHits > 3)
+                sapphireHits = 0;
+        }
+    }
+
+    public class GemStaffReworkItem : GlobalItem
     {
         public override bool InstancePerEntity => true;
 
-        private readonly int[] gemStaves = [ItemID.AmethystStaff, ItemID.TopazStaff, ItemID.SapphireStaff, ItemID.EmeraldStaff, ItemID.RubyStaff, ItemID.DiamondStaff, ItemID.AmberStaff];
+        public static readonly int[] gemStaves = [ItemID.AmethystStaff, ItemID.TopazStaff, ItemID.SapphireStaff, ItemID.EmeraldStaff, ItemID.RubyStaff, ItemID.DiamondStaff, ItemID.AmberStaff];
+
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+        {
+            return gemStaves.Contains(entity.type);
+        }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (gemStaves.Contains(item.type) && GetInstance<GameplayConfig>().OreStaffReworks) 
+            if (gemStaves.Contains(item.type)) 
             {
                 string[] text =
                 [
-                    Language.GetTextValue("Mods.GoldLeaf.Items.Vanilla.GemStaves.Type" + (Array.IndexOf(gemStaves, item.type) + 1))
+                    Language.GetTextValue("Mods.PacnyRefresh.VanillaItemTooltips.GemStaves.Type" + (Array.IndexOf(gemStaves, item.type) + 1))
                 ];
 
                 TooltipLine gemStaffTooltip = tooltips.Find(n => n.Name == "UseMana");
@@ -50,73 +105,104 @@ namespace PacnyRefresh.Items.Gem
             }
         }
 
+        public override void SetStaticDefaults()
+        {
+            foreach (int item in gemStaves)
+            {
+                ItemSets.Glowmask[item] = (Request<Texture2D>($"PacnyRefresh/Items/Gem/{ItemID.Search.GetName(item)}Glow", AssetRequestMode.ImmediateLoad), Color.White with { A = 160 }, true);
+            }
+        }
+
         public override void SetDefaults(Item item)
         {
-            if (GetInstance<GameplayConfig>().OreStaffReworks) 
+            switch (item.type)
             {
-                switch (item.type)
-                {
-                    case ItemID.AmethystStaff:
-                        {
-                            item.damage = 14;
-                            item.ArmorPenetration = 10;
-                            item.crit = 8;
-                            break;
-                        }
-                    case ItemID.TopazStaff:
-                        {
-                            item.damage = 13;
-                            break;
-                        }
-                    case ItemID.SapphireStaff:
-                        {
-                            item.damage = 17;
-                            item.crit = 6;
-                            break;
-                        }
-                    case ItemID.EmeraldStaff:
-                        {
-                            item.damage = 16;
-                            item.shootSpeed = 14.5f;
-                            item.useTime = 42;
-                            item.useAnimation = 42;
-                            break;
-                        }
-                    case ItemID.RubyStaff:
-                        {
-                            item.damage = 18;
-                            item.crit = 3;
-                            break;
-                        }
-                    case ItemID.DiamondStaff:
-                        {
-                            item.damage = 10;
-                            item.useTime = 10;
-                            item.useAnimation = 20;
-                            break;
-                        }
-                    case ItemID.AmberStaff:
-                        {
-                            item.damage = 21;
-                            item.crit = 2;
-                            break;
-                        }
-                }
+                case ItemID.AmethystStaff:
+                    {
+                        item.width = 30;
+                        item.height = 30;
+
+                        item.damage = 17;
+                        item.ArmorPenetration = 10;
+                        item.crit = 4;
+                        break;
+                    }
+                case ItemID.TopazStaff:
+                    {
+                        item.width = 32;
+                        item.height = 32;
+
+                        item.damage = 14;
+                        break;
+                    }
+                case ItemID.SapphireStaff:
+                    {
+                        item.width = 34;
+                        item.height = 34;
+
+                        item.damage = 18;
+                        item.crit = 6;
+                        item.shootSpeed = 28f;
+                        break;
+                    }
+                case ItemID.EmeraldStaff:
+                    {
+                        item.width = 38;
+                        item.height = 34;
+
+                        item.damage = 19;
+                        item.shootSpeed = 14.5f;
+                        item.useTime = 42;
+                        item.useAnimation = 42;
+                        break;
+                    }
+                case ItemID.RubyStaff:
+                    {
+                        item.width = 34;
+                        item.height = 34;
+
+                        item.damage = 17;
+                        item.shootSpeed = 1.5f;
+                        break;
+                    }
+                case ItemID.DiamondStaff:
+                    {
+                        item.width = 36;
+                        item.height = 36;
+
+                        item.damage = 12;
+                        item.useTime = 10;
+                        item.useAnimation = 20;
+                        break;
+                    }
+                case ItemID.AmberStaff:
+                    {
+                        item.width = 34;
+                        item.height = 34;
+
+                        item.damage = 22;
+                        item.crit = 4;
+                        break;
+                    }
             }
         }
 
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            if (item.type == ItemID.TopazStaff && GetInstance<GameplayConfig>().OreStaffReworks)
+            if (item.type == ItemID.TopazStaff)
             {
                 int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-9, 9))) * 0.85f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
                 Main.projectile[p].scale *= 0.6f;
             }
-            if (item.type == ItemID.EmeraldStaff && GetInstance<GameplayConfig>().OreStaffReworks)
+            if (item.type == ItemID.EmeraldStaff)
             {
                 int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 Main.projectile[p].velocity.Y -= 3.8f;
                 return false;
+            }
+            if (item.type == ItemID.DiamondStaff)
+            {
+                int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians((float)Math.Sin(PacnySystem.rottime * 8))) * 4f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
             }
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
@@ -127,48 +213,142 @@ namespace PacnyRefresh.Items.Gem
 
             public override void SetDefaults(Projectile entity)
             {
-                if (GetInstance<GameplayConfig>().OreStaffReworks)
+                switch (entity.type)
                 {
-                    switch (entity.type)
-                    {
-                        case ProjectileID.AmethystBolt:
-                        case ProjectileID.TopazBolt:
-                            {
-                                entity.timeLeft = 300;
-                                break;
-                            }
-                        case ProjectileID.EmeraldBolt:
-                            {
-                                entity.timeLeft = 180;
-                                break;
-                            }
-                        case ProjectileID.DiamondBolt:
-                            {
-                                entity.extraUpdates = 10;
-                                entity.penetrate = 2;
-                                break;
-                            }
-                    }
+                    case ProjectileID.AmethystBolt:
+                        {
+                            entity.netImportant = true;
+                            entity.timeLeft = 300;
+                            break;
+                        }
+                    case ProjectileID.TopazBolt:
+                        {
+                            entity.timeLeft = 300;
+                            break;
+                        }
+                    case ProjectileID.EmeraldBolt:
+                        {
+                            entity.timeLeft = 180;
+                            break;
+                        }
+                    case ProjectileID.RubyBolt:
+                        {
+                            entity.penetrate = 1;
+                            break;
+                        }
+                    case ProjectileID.DiamondBolt:
+                        {
+                            entity.extraUpdates = 10;
+                            entity.penetrate = 2;
+                            entity.usesLocalNPCImmunity = true;
+                            entity.localNPCHitCooldown = 10;
+                            break;
+                        }
                 }
             }
 
             public override bool PreAI(Projectile projectile)
             {
-                if (projectile.type == ProjectileID.EmeraldBolt && GetInstance<GameplayConfig>().OreStaffReworks)
+                if (projectile.type == ProjectileID.SapphireBolt)
+                {
+                    projectile.velocity *= 0.95f;
+                    if (projectile.velocity.Length() <= 0.1f)
+                        projectile.Kill();
+                }
+                if (projectile.type == ProjectileID.EmeraldBolt)
                 {
                     projectile.velocity.Y += 0.35f;
                 }
+                if (projectile.type == ProjectileID.RubyBolt)
+                {
+                    projectile.velocity *= 1.05f;
+                    if (projectile.velocity.Length() > 15f)
+                    {
+                        projectile.velocity = Vector2.Normalize(projectile.velocity) * 15f;
+                        projectile.extraUpdates = 1;
+                    }
+                }
+                if (projectile.type == ProjectileID.AmberBolt)
+                {
+                    float targetDistance = 8000f;
+                    int target = -1;
+                    for (int i = 0; i < 100; i++)
+                    {
+                        float range = Vector2.Distance(projectile.Center, Main.npc[i].Center);
+                        if (range < targetDistance && range < 100 && Main.npc[i].CanBeChasedBy(projectile, false))
+                        {
+                            target = i;
+                            targetDistance = range;
+                        }
+                    }
+                    if (target != -1 && Collision.CanHit(projectile.position, projectile.width, projectile.height, Main.npc[target].position, Main.npc[target].width, Main.npc[target].height))
+                    {
+                        projectile.velocity += Vector2.Normalize(Main.npc[target].Center - projectile.Center) * 3f;
+
+                        if (projectile.velocity.Length() > 12.5f)
+                            projectile.velocity = Vector2.Normalize(projectile.velocity) * 12.5f;
+                    }
+
+                    if (targetDistance > 100)
+                    {
+                        projectile.velocity.Y += (float)Math.Sin(PacnySystem.rottime * 8) * Math.Clamp(projectile.GetGlobalProjectile<PacnyProjectile>().counter * 0.1f, 0f, 1.5f);
+                    }
+                    else
+                        projectile.velocity.Y += (float)Math.Sin(PacnySystem.rottime * 6) * 0.5f;
+                }
                 return base.PreAI(projectile);
+            }
+            public override void AI(Projectile projectile)
+            {
+                if (projectile.type == ProjectileID.RubyBolt)
+                {
+                    if (projectile.GetGlobalProjectile<PacnyProjectile>().counter % 8 == 0)
+                    {
+                        for (float k = 0; k < Math.PI * 2; k += (float)Math.PI / 30)
+                        { 
+                            Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemRuby, Vector2.One.RotatedBy(k) * 0.9f, 0, Color.White, 0.7f); 
+                            dust.noGravity = true;
+                        }
+                    }
+                }
+            }
+
+            public override void OnKill(Projectile projectile, int timeLeft)
+            {
+                if (projectile.type == ProjectileID.RubyBolt)
+                {
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+
+                    int i = Main.rand.Next(7, 10);
+                    for (float k = 0; k < i; k++)
+                    {
+                        Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), projectile.damage / 3, 0, projectile.owner, 0f, 0f);
+                        p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
+                        p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
+                    }
+                }
+                if (projectile.type == ProjectileID.SapphireBolt)
+                {
+                    for (float i = 0; i < 12; ++i)
+                    {
+                        Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemSapphire, new Vector2(0f, -3f).RotatedByRandom(MathHelper.Pi).RotatedBy(MathHelper.TwoPi * i / 8) * Vector2.One * (0.6f + Main.rand.NextFloat() * 0.35f), 0, Color.White, 1.5f);
+                        dust.noGravity = true;
+                        dust.fadeIn = Main.rand.NextFloat() * 2f;
+                        var dust2 = Dust.CloneDust(dust);
+                        dust2.scale *= 0.5f;
+                        dust2.fadeIn *= 0.5f;
+                    }
+                }
             }
 
             public override void PostAI(Projectile projectile)
             {
-                if (projectile.type == ProjectileID.AmethystBolt && GetInstance<GameplayConfig>().OreStaffReworks) 
+                if (projectile.type == ProjectileID.AmethystBolt) 
                 {
                     projectile.velocity = projectile.velocity.Length() * Vector2.Lerp(projectile.velocity, projectile.DirectionTo(Main.MouseWorld) * projectile.velocity.Length() * 0.5f, 0.2f).SafeNormalize(Vector2.Normalize(projectile.velocity));
                     projectile.netUpdate = true;
                 }
-                if (projectile.type == ProjectileID.EmeraldBolt && projectile.timeLeft % 6 == 0 && GetInstance<GameplayConfig>().OreStaffReworks)
+                if (projectile.type == ProjectileID.EmeraldBolt && projectile.timeLeft % 6 == 0)
                 {
                     int emerald = Projectile.NewProjectile(projectile.GetSource_FromAI(), new Vector2(projectile.Center.X, projectile.Center.Y + Main.rand.NextFloat(-4, 4)), Vector2.Zero, ProjectileType<FallingEmerald>(), (int)(projectile.damage * 0.55f), projectile.knockBack * 0.3f, projectile.owner);
                     Main.projectile[emerald].DamageType = DamageClass.Magic;
@@ -177,7 +357,7 @@ namespace PacnyRefresh.Items.Gem
 
             public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
             {
-                if (projectile.type == ProjectileID.TopazBolt && GetInstance<GameplayConfig>().OreStaffReworks)
+                if (projectile.type == ProjectileID.TopazBolt)
                 {
                     if (projectile.velocity.X != oldVelocity.X)
                     {
@@ -195,64 +375,258 @@ namespace PacnyRefresh.Items.Gem
 
             public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
             {
-                if (GetInstance<GameplayConfig>().OreStaffReworks) 
+                switch (projectile.type)
                 {
-                    switch (projectile.type)
-                    {
-                        case ProjectileID.AmethystBolt:
+                    case ProjectileID.AmethystBolt:
+                        {
+                            ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.NightsEdge,
+                                    new ParticleOrchestraSettings { PositionInWorld = projectile.Center },
+                                    projectile.owner);
+                            break;
+                        }
+                    case ProjectileID.SapphireBolt:
+                        {
+                            if (Main.player[projectile.owner].GetModPlayer<GemStaffPlayer>().sapphireHits >= 3)
                             {
-                                ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.NightsEdge,
-                                        new ParticleOrchestraSettings { PositionInWorld = projectile.Center },
-                                        projectile.owner);
-                                break;
+                                int explosion = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, Vector2.Zero, ProjectileType<SapphireBurst>(), projectile.damage * 2, projectile.knockBack / 2, projectile.owner, 80f);
+                                Main.projectile[explosion].DamageType = DamageClass.Magic;
+                                SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                                SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
                             }
-                        case ProjectileID.SapphireBolt:
+                            Main.player[projectile.owner].GetModPlayer<GemStaffPlayer>().sapphireHits++;
+                            break;
+                        }
+                    case ProjectileID.DiamondBolt:
+                        {
+                            if (hit.Crit)
                             {
-                                if (hit.Crit)
-                                {
-                                    int explosion = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, Vector2.Zero, ProjectileType<SapphireBurst>(), projectile.damage * 2, projectile.knockBack / 2, projectile.owner, 80f);
-                                    Main.projectile[explosion].DamageType = DamageClass.Magic;
-                                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
-                                    SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
-                                }
-                                break;
+                                projectile.damage -= 1;
+                                projectile.penetrate += 1;
+                                projectile.CritChance += 6;
                             }
-                        case ProjectileID.RubyBolt:
+                            break;
+                        }
+                    case ProjectileID.AmberBolt:
+                        {
+                            if (hit.Crit)
                             {
-                                if (hit.Crit)
-                                {
-                                    Item.NewItem(new EntitySource_DropAsItem(Projectile), target.Center, ItemType<HeartTiny>());
-                                    //NewItemPerfect(target.Center, new Vector2(0, -2f), ItemType<HeartTiny>());
-                                }
-                                break;
+                                target.AddBuff(BuffType<AmberStun>(), 120);
+                                SoundEngine.PlaySound(SoundID.Item150, projectile.Center);
+                                SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, projectile.Center);
+                                ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.ChlorophyteLeafCrystalShot,
+                                        new ParticleOrchestraSettings { PositionInWorld = target.Center },
+                                        target.whoAmI);
                             }
-                        case ProjectileID.DiamondBolt:
-                            {
-                                if (hit.Crit)
-                                {
-                                    projectile.damage -= 1;
-                                    projectile.penetrate += 1;
-                                    projectile.CritChance += 6;
-                                }
-                                break;
-                            }
-                        case ProjectileID.AmberBolt:
-                            {
-                                if (hit.Crit)
-                                {
-                                    target.AddBuff(BuffType<AmberStun>(), 120);
-                                    SoundEngine.PlaySound(SoundID.Item150, projectile.Center);
-                                    SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, projectile.Center);
-                                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.ChlorophyteLeafCrystalShot,
-                                            new ParticleOrchestraSettings { PositionInWorld = target.Center },
-                                            target.whoAmI);
-                                }
-                                break;
-                            }
-                    }
+                            break;
+                        }
                 }
             }
         }
     }
-    */
+    public class SapphireBurst : ModProjectile
+    {
+        public override string Texture => "PacnyRefresh/Textures/Empty";
+
+        public float TimeFade => 1 - Projectile.timeLeft / 20f;
+        public float Radius => BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
+        int counter;
+
+        public override void SetDefaults()
+        {
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 24;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            //Projectile.extraUpdates = 1;
+
+            //Projectile.GetGlobalProjectile<GoldLeafProjectile>().throwingDamageType = DamageClass.Melee;
+            Projectile.DamageType = DamageClass.Melee;
+        }
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Excalibur,
+                new ParticleOrchestraSettings { PositionInWorld = Projectile.Center },
+                Projectile.owner);
+        }
+
+        public override bool PreAI()
+        {
+            counter++;
+            return true;
+        }
+
+        float rot = 0;
+        public override void AI()
+        {
+            Lighting.AddLight((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16), GemColor(3).R / 255, GemColor(3).G / 255, GemColor(3).B / 255);
+
+            if (counter <= 10 /*&& counter % 2 == 0*/)
+            {
+                for (int k = 0; k < 2; k++)
+                {
+                    rot += (float)Math.PI / 20;
+                    if (rot >= Math.PI * 2) rot = 0;
+
+                    float x = (float)Math.Cos(PacnySystem.rottime + rot + k * 3) * 1.6f;
+                    float y = (float)Math.Sin(PacnySystem.rottime + rot + k * 3) * 1.6f;
+                    Vector2 pos = new Vector2(x, y).RotatedBy(k * 2 * 6.28f);
+
+                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.StardustPunch,
+                        new ParticleOrchestraSettings { PositionInWorld = Projectile.Center, MovementVector = pos * (4.8f - counter * 0.2f) },
+                        Projectile.owner);
+
+                    //Dust d = Dust.NewDustPerfect(Projectile.Center, DustType<LightDust>(), pos * (3.2f - (counter * 0.1f)), 0, GemColor(3), 0.5f);
+                }
+            }
+
+            if (counter > 12)
+            {
+                Projectile.damage = 0;
+            }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            return CheckCircularCollision(Projectile.Center, (int)Radius + 40, targetHitbox);
+        }
+
+        public override void PostDraw(Color lightColor)
+        {
+            Texture2D tex = Request<Texture2D>("PacnyRefresh/Textures/Flares/wavering").Value;
+            Color color = GemColor(3) * (1.2f - counter * 0.05f);
+            color.A = 0;
+
+            Main.spriteBatch.Draw
+            (
+                tex,
+                new Vector2
+                (
+                    Projectile.position.X - Main.screenPosition.X + Projectile.width * 0.5f,
+                    Projectile.position.Y - Main.screenPosition.Y + Projectile.height * 0.5f
+                ),
+                new Rectangle(0, 0, tex.Width, tex.Height),
+                color,
+                0f,
+                tex.Size() * 0.5f,
+                Projectile.scale * 0.16f + Radius * 0.009f,
+                SpriteEffects.None,
+                0f
+            );
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 4.6f * target.knockBackResist;
+
+            target.immune[Projectile.owner] = 8;
+        }
+    }
+
+    public class FallingEmerald : ModProjectile
+    {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.Emerald;
+
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 12;
+            Projectile.height = 16;
+
+            Projectile.friendly = true;
+            Projectile.extraUpdates = 1;
+
+            Projectile.DamageType = DamageClass.Melee;
+
+            Projectile.GetGlobalProjectile<PacnyProjectile>().gravity = 0.08f;
+            Projectile.GetGlobalProjectile<PacnyProjectile>().gravityDelay = 20;
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);
+
+            for (float k = 0; k < 6.28f; k += 0.52f)
+                Dust.NewDustPerfect(Projectile.Center, DustType<LightDust>(), Vector2.One.RotatedBy(k) * 0.45f, 0, GemColor(4), 0.35f);
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 drawOrigin = new(tex.Width * 0.5f, Projectile.height * 0.5f);
+
+            for (int k = 0; k < Projectile.oldPos.Length; k++)
+            {
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin/* + new Vector2(0f, Projectile.gfxOffY)*/;
+                Main.spriteBatch.Draw(tex, drawPos, null, ColorHelper.AdditiveWhite * (1.0f - 0.15f * k), Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            }
+            return true;
+        }
+    }
+
+    public class BasicRubyBolt : ModProjectile
+    {
+        public override string Texture => "PacnyRefresh/Textures/Empty";
+
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.CloneDefaults(ProjectileID.RubyBolt);
+            //AIType = ProjectileID.RubyBolt;
+
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = 1;
+            Projectile.extraUpdates = 1;
+        }
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            Projectile.velocity *= 0.5f;
+        }
+
+        public override void AI()
+        {
+            //Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GemRuby, Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f, 0, GemColor(ItemID.Ruby), 0.6f);
+            Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, Projectile.velocity * 0.6f, 0, GemColor(ItemID.Ruby), 1f);
+            d.noGravity = true;
+        }
+    }
+
+    public class AmberStun : ModBuff
+    {
+        public override void SetStaticDefaults()
+        {
+            Main.debuff[Type] = true;
+            Main.pvpBuff[Type] = false;
+            Main.buffNoSave[Type] = true;
+        }
+
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+            npc.GetGlobalNPC<PacnyNPC>().stunned = true;
+
+            if (!npc.boss)
+            {
+                npc.velocity *= 0;
+                npc.frame.Y = 0;
+            }
+
+            if (Main.rand.NextBool(20))
+            {
+                ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.AshTreeShake,
+                    new ParticleOrchestraSettings { PositionInWorld = npc.Center },
+                    npc.whoAmI);
+            }
+        }
+    }
 }
