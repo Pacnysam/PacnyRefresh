@@ -9,9 +9,7 @@ Configs: {
 	}
 }
 
-Buffs: {
-	AmberStun: {
-		DisplayName: Amber Stun
-		Description: Mods.PacnyRefresh.Buffs.AmberStun.Description
-	}
+Mechanics: {
+	CritMult: "{0}x critical strike multiplier"
+	LearnRecipe: Learned Recipe: {0}
 }

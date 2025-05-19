@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.ModLoader;
 using System.IO;
 using Terraria.ModLoader.IO;
+using Terraria.DataStructures;
 
 namespace PacnyRefresh.Core
 {
@@ -17,6 +18,8 @@ namespace PacnyRefresh.Core
         public override bool InstancePerEntity => true;
 
         public float critDamageMod = 0f;
+
+        public int summonCritChance = 0;
 
         public float gravity = 0f;
         public int gravityDelay = 0;
@@ -32,6 +35,18 @@ namespace PacnyRefresh.Core
             if (gravity != 0f && gravityDelay <= 0)
             {
                 projectile.velocity.Y += gravity;
+            }
+        }
+        public override void OnSpawn(Projectile projectile, IEntitySource source)
+        {
+            if (source is EntitySource_ItemUse realSource)
+            {
+                projectile.GetGlobalProjectile<PacnyProjectile>().critDamageMod += realSource.Item.GetGlobalItem<PacnyItem>().critDamageMod;
+                projectile.netUpdate = true;
+            }
+            if (source is EntitySource_Parent parent && parent.Entity is Projectile proj)
+            {
+                projectile.GetGlobalProjectile<PacnyProjectile>().critDamageMod = proj.GetGlobalProjectile<PacnyProjectile>().critDamageMod;
             }
         }
 

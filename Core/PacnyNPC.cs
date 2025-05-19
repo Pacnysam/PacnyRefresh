@@ -46,7 +46,7 @@ namespace PacnyRefresh.Core
             modifiers.DefenseEffectiveness *= defenseFactorMod;
         }
 
-        public static bool CanBeStunned(NPC npc) => !npc.boss /* && npc.knockBackResist != 0f*/;
+        public static bool CanBeStunned(NPC npc) => !npc.boss && npc.aiStyle != NPCAIStyleID.Worm /* && npc.knockBackResist != 0f*/;
 
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
         {
@@ -58,7 +58,7 @@ namespace PacnyRefresh.Core
 
         public override bool PreAI(NPC npc)
         {
-            if (Main.netMode != NetmodeID.Server && stunned && !npc.boss/* && npc.knockBackResist != 0f*/)
+            if (Main.netMode != NetmodeID.Server && stunned && !npc.boss && npc.aiStyle != NPCAIStyleID.Worm/* && npc.knockBackResist != 0f*/)
             {
                 npc.velocity = Vector2.Zero;
                 return false;
@@ -68,7 +68,7 @@ namespace PacnyRefresh.Core
 
         public override void PostAI(NPC npc)
         {
-            if (Slowed && !npc.boss/* && npc.knockBackResist != 0f*/)
+            if (Slowed && !npc.boss && npc.aiStyle != NPCAIStyleID.Worm/* && npc.knockBackResist != 0f*/)
             {
                 npc.position -= npc.velocity * (1 - movementSpeed);
             }

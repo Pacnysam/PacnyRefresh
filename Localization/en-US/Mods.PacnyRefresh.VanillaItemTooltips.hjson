@@ -1,11 +1,11 @@
 BlueMoon: Releases bouncing water bolts when smashing the ground
 
 GemStaves: {
-	Type1: Pierces armor and curves toward the cursor
+	Type1: Pierces armor and follows the cursor
 	Type2: Shoots 2 bouncing bolts
 	Type3: Every fourth hit bursts into light
 	Type4: Bolts drop falling emeralds
 	Type5: Shatters into smaller bolts
 	Type6: Fast as light
-	Type7: Homes in on enemies, stuns on critical strikes
+	Type7: Homes in on enemies, critical strikes stun
 }

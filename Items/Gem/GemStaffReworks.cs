@@ -50,6 +50,18 @@ namespace PacnyRefresh.Items.Gem
             {
                 Recipe recipe = Main.recipe[i];
 
+                if (recipe.HasIngredient(ItemID.GoldBar) && recipe.HasIngredient(ItemID.Ruby) && recipe.HasTile(TileID.Anvils) && recipe.HasResult(ItemID.RubyStaff))
+                {
+                    recipe.RemoveIngredient(ItemID.Ruby);
+                    recipe.AddIngredient(ItemID.FallenStar, 3);
+                    recipe.AddIngredient(ItemID.Ruby, 8);
+                }
+                if (recipe.HasIngredient(ItemID.PlatinumBar) && recipe.HasIngredient(ItemID.Diamond) && recipe.HasTile(TileID.Anvils) && recipe.HasResult(ItemID.DiamondStaff))
+                {
+                    recipe.RemoveIngredient(ItemID.Diamond);
+                    recipe.AddIngredient(ItemID.FallenStar, 3);
+                    recipe.AddIngredient(ItemID.Diamond, 8);
+                }
                 if (recipe.HasIngredient(ItemID.FossilOre) && recipe.HasIngredient(ItemID.Amber) && recipe.HasTile(TileID.Anvils) && recipe.HasResult(ItemID.AmberStaff))
                 {
                     recipe.RemoveIngredient(ItemID.Amber);
@@ -122,9 +134,11 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 30;
                         item.height = 30;
 
-                        item.damage = 17;
+                        item.damage = 16;
                         item.ArmorPenetration = 10;
                         item.crit = 4;
+
+                        item.mana = 6;
                         break;
                     }
                 case ItemID.TopazStaff:
@@ -132,7 +146,11 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 32;
                         item.height = 32;
 
-                        item.damage = 14;
+                        item.damage = 15;
+
+                        item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
+
+                        item.mana = 7;
                         break;
                     }
                 case ItemID.SapphireStaff:
@@ -140,9 +158,11 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 34;
                         item.height = 34;
 
-                        item.damage = 18;
+                        item.damage = 17;
                         item.crit = 6;
                         item.shootSpeed = 28f;
+
+                        item.mana = 8;
                         break;
                     }
                 case ItemID.EmeraldStaff:
@@ -150,10 +170,14 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 38;
                         item.height = 34;
 
-                        item.damage = 19;
+                        item.damage = 18;
                         item.shootSpeed = 14.5f;
                         item.useTime = 42;
                         item.useAnimation = 42;
+
+                        item.GetGlobalItem<PacnyItem>().critDamageMod = 0.25f;
+
+                        item.mana = 8;
                         break;
                     }
                 case ItemID.RubyStaff:
@@ -161,8 +185,14 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 34;
                         item.height = 34;
 
-                        item.damage = 17;
+                        item.reuseDelay = 15;
+
+                        item.damage = 21;
                         item.shootSpeed = 1.5f;
+
+                        item.rare = ItemRarityID.Green;
+
+                        item.mana = 9;
                         break;
                     }
                 case ItemID.DiamondStaff:
@@ -170,7 +200,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 36;
                         item.height = 36;
 
-                        item.damage = 12;
+                        item.damage = 8;
                         item.useTime = 10;
                         item.useAnimation = 20;
                         break;
@@ -180,15 +210,113 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 34;
                         item.height = 34;
 
-                        item.damage = 22;
-                        item.crit = 4;
+                        item.useTime = 5;
+                        item.useAnimation = 15;
+                        item.reuseDelay = 45;
+
+                        item.damage = 19;
+                        item.GetGlobalItem<PacnyItem>().critDamageMod = -0.5f;
+
+                        item.mana = 12;
+
+                        item.crit = -2;
+
+                        item.rare = ItemRarityID.Orange;
                         break;
                     }
             }
         }
 
+        public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            float offset = -1f;
+            switch (type)
+            {
+                case ProjectileID.AmethystBolt:
+                    {
+                        offset = 0f;
+                        break;
+                    }
+                case ProjectileID.TopazBolt:
+                    {
+                        offset = -3f;
+                        break;
+                    }
+                case ProjectileID.SapphireBolt:
+                    {
+                        offset = -3.5f;
+                        break;
+                    }
+                case ProjectileID.EmeraldBolt:
+                    {
+                        offset = -8f;
+                        break;
+                    }
+                case ProjectileID.RubyBolt:
+                    {
+                        offset = -2f;
+                        break;
+                    }
+                case ProjectileID.DiamondBolt:
+                    {
+                        offset = -7.5f;
+                        break;
+                    }
+                case ProjectileID.AmberBolt:
+                    {
+                        offset = -1.5f;
+                        break;
+                    }
+            }
+
+            Vector2 muzzleOffset = Vector2.Normalize(velocity) * (item.Size.Length() + offset);
+
+            if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
+            {
+                position += muzzleOffset;
+            }
+        }
+
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            int dustType = 0;
+
+            if (item.type == ItemID.AmethystStaff)
+            {
+                dustType = DustID.GemAmethyst;
+            }
+            if (item.type == ItemID.TopazStaff)
+            {
+                dustType = DustID.GemTopaz;
+            }
+            if (item.type == ItemID.SapphireStaff)
+            {
+                dustType = DustID.GemSapphire;
+            }
+            if (item.type == ItemID.EmeraldStaff)
+            {
+                dustType = DustID.GemEmerald;
+            }
+            if (item.type == ItemID.RubyStaff)
+            {
+                dustType = DustID.GemRuby;
+            }
+            if (item.type == ItemID.DiamondStaff)
+            {
+                dustType = DustID.GemDiamond;
+            }
+            if (item.type == ItemID.AmberStaff)
+            {
+                dustType = DustID.AmberBolt;
+            }
+
+            for (float k = 0; k < Math.PI * 2; k += Main.rand.NextFloat(0.1f, 0.24f))
+            {
+                Dust dust = Dust.NewDustPerfect(position + new Vector2(0, Main.rand.NextFloat(10, 15)).RotatedBy(k), dustType, Vector2.One.RotatedBy(k) * 3f, 0, Color.White, Main.rand.NextFloat(0.75f, 1.05f));
+                dust.velocity *= -0.5f;
+                dust.noGravity = true;
+            }
+
             if (item.type == ItemID.TopazStaff)
             {
                 int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-9, 9))) * 0.85f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
@@ -203,6 +331,12 @@ namespace PacnyRefresh.Items.Gem
             if (item.type == ItemID.DiamondStaff)
             {
                 int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians((float)Math.Sin(PacnySystem.rottime * 8))) * 4f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
+            }
+            if (item.type == ItemID.AmberStaff)
+            {
+                Projectile p = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI, Main.rand.NextFloat(-3, 3));
+                p.scale = Main.rand.NextFloat(0.7f, 1.3f);
+                return false;
             }
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
@@ -238,7 +372,14 @@ namespace PacnyRefresh.Items.Gem
                         }
                     case ProjectileID.DiamondBolt:
                         {
-                            entity.extraUpdates = 10;
+                            entity.extraUpdates = 20;
+                            entity.penetrate = 2;
+                            entity.usesLocalNPCImmunity = true;
+                            entity.localNPCHitCooldown = 10;
+                            break;
+                        }
+                    case ProjectileID.AmberBolt:
+                        {
                             entity.penetrate = 2;
                             entity.usesLocalNPCImmunity = true;
                             entity.localNPCHitCooldown = 10;
@@ -270,12 +411,14 @@ namespace PacnyRefresh.Items.Gem
                 }
                 if (projectile.type == ProjectileID.AmberBolt)
                 {
+                    const int homingRange = 150;
+
                     float targetDistance = 8000f;
                     int target = -1;
                     for (int i = 0; i < 100; i++)
                     {
                         float range = Vector2.Distance(projectile.Center, Main.npc[i].Center);
-                        if (range < targetDistance && range < 100 && Main.npc[i].CanBeChasedBy(projectile, false))
+                        if (range < targetDistance && range < homingRange && Main.npc[i].CanBeChasedBy(projectile, false))
                         {
                             target = i;
                             targetDistance = range;
@@ -289,12 +432,12 @@ namespace PacnyRefresh.Items.Gem
                             projectile.velocity = Vector2.Normalize(projectile.velocity) * 12.5f;
                     }
 
-                    if (targetDistance > 100)
+                    if (targetDistance > homingRange)
                     {
-                        projectile.velocity.Y += (float)Math.Sin(PacnySystem.rottime * 8) * Math.Clamp(projectile.GetGlobalProjectile<PacnyProjectile>().counter * 0.1f, 0f, 1.5f);
+                        projectile.velocity.Y += (float)Math.Sin((PacnySystem.rottime + projectile.ai[0]) * 8) * Math.Clamp(projectile.GetGlobalProjectile<PacnyProjectile>().counter * 0.1f, 0f, 1.5f);
                     }
                     else
-                        projectile.velocity.Y += (float)Math.Sin(PacnySystem.rottime * 6) * 0.5f;
+                        projectile.velocity.Y += (float)Math.Sin((PacnySystem.rottime + projectile.ai[0]) * 6) * 0.5f;
                 }
                 return base.PreAI(projectile);
             }
@@ -306,7 +449,7 @@ namespace PacnyRefresh.Items.Gem
                     {
                         for (float k = 0; k < Math.PI * 2; k += (float)Math.PI / 30)
                         { 
-                            Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemRuby, Vector2.One.RotatedBy(k) * 0.9f, 0, Color.White, 0.7f); 
+                            Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemRuby, Vector2.One.RotatedBy(k) * 0.9f, 0, Color.White, 1f); 
                             dust.noGravity = true;
                         }
                     }
@@ -322,7 +465,7 @@ namespace PacnyRefresh.Items.Gem
                     int i = Main.rand.Next(7, 10);
                     for (float k = 0; k < i; k++)
                     {
-                        Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), projectile.damage / 3, 0, projectile.owner, 0f, 0f);
+                        Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), projectile.damage / 2, 0, projectile.owner, 0f, 0f);
                         p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
                         p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
                     }
@@ -339,6 +482,18 @@ namespace PacnyRefresh.Items.Gem
                         dust2.fadeIn *= 0.5f;
                     }
                 }
+                if (projectile.type == ProjectileID.AmberBolt)
+                {
+                    for (float i = 0; i < 12; ++i)
+                    {
+                        Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.AmberBolt, new Vector2(0f, -3f).RotatedByRandom(MathHelper.Pi).RotatedBy(MathHelper.TwoPi * i / 8) * Vector2.One * (0.6f + Main.rand.NextFloat() * 0.35f), 0, Color.White, 1.5f);
+                        dust.noGravity = true;
+                        dust.fadeIn = Main.rand.NextFloat() * 2f;
+                        var dust2 = Dust.CloneDust(dust);
+                        dust2.scale *= 0.5f;
+                        dust2.fadeIn *= 0.5f;
+                    }
+                }
             }
 
             public override void PostAI(Projectile projectile)
@@ -348,9 +503,9 @@ namespace PacnyRefresh.Items.Gem
                     projectile.velocity = projectile.velocity.Length() * Vector2.Lerp(projectile.velocity, projectile.DirectionTo(Main.MouseWorld) * projectile.velocity.Length() * 0.5f, 0.2f).SafeNormalize(Vector2.Normalize(projectile.velocity));
                     projectile.netUpdate = true;
                 }
-                if (projectile.type == ProjectileID.EmeraldBolt && projectile.timeLeft % 6 == 0)
+                if (projectile.type == ProjectileID.EmeraldBolt && projectile.timeLeft % 5 == 0 && projectile.timeLeft > 90)
                 {
-                    int emerald = Projectile.NewProjectile(projectile.GetSource_FromAI(), new Vector2(projectile.Center.X, projectile.Center.Y + Main.rand.NextFloat(-4, 4)), Vector2.Zero, ProjectileType<FallingEmerald>(), (int)(projectile.damage * 0.55f), projectile.knockBack * 0.3f, projectile.owner);
+                    int emerald = Projectile.NewProjectile(projectile.GetSource_FromAI(), new Vector2(projectile.Bottom.X, projectile.Bottom.Y + Main.rand.NextFloat(-4, 4)), Vector2.Zero, ProjectileType<FallingEmerald>(), (int)(projectile.damage * 0.55f), projectile.knockBack * 0.3f, projectile.owner);
                     Main.projectile[emerald].DamageType = DamageClass.Magic;
                 }
             }
@@ -408,6 +563,7 @@ namespace PacnyRefresh.Items.Gem
                         }
                     case ProjectileID.AmberBolt:
                         {
+                            projectile.damage /= 2;
                             if (hit.Crit)
                             {
                                 target.AddBuff(BuffType<AmberStun>(), 120);
@@ -523,7 +679,7 @@ namespace PacnyRefresh.Items.Gem
             target.immune[Projectile.owner] = 8;
         }
     }
-
+    
     public class FallingEmerald : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Emerald;
@@ -546,6 +702,11 @@ namespace PacnyRefresh.Items.Gem
 
             Projectile.GetGlobalProjectile<PacnyProjectile>().gravity = 0.08f;
             Projectile.GetGlobalProjectile<PacnyProjectile>().gravityDelay = 20;
+        }
+
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        {
+            hitbox.Inflate(12, 0);
         }
 
         public override void OnKill(int timeLeft)

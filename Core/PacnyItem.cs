@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
+using Terraria.Localization;
 
 namespace PacnyRefresh.Core
 {
@@ -17,8 +18,36 @@ namespace PacnyRefresh.Core
     {
         public override bool InstancePerEntity => true;
 
+        public float critDamageMod = 0f;
+
         public float materialMult = 0;
         public float rottime = 0;
+
+        public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
+        {
+            float updatedCritMod = (2 + item.GetGlobalItem<PacnyItem>().critDamageMod) * Main.LocalPlayer.GetModPlayer<PacnyPlayer>().critDamageMult;
+            if (updatedCritMod <= 1 && Helper.IsWeapon(item))
+                crit *= 0;
+        }
+
+        /*public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            float updatedCritMod = (2 + item.GetGlobalItem<PacnyItem>().critDamageMod) * Main.LocalPlayer.GetModPlayer<PacnyPlayer>().critDamageMult;
+
+            if (updatedCritMod != 2 && updatedCritMod > 1 && Helper.IsWeapon(item))
+            {
+                TooltipLine critLine = tooltips.Find(n => n.Name == "CritChance");
+                TooltipLine damageLine = tooltips.Find(n => n.Name == "Damage");
+                int index = tooltips.IndexOf(critLine);
+
+                if (critLine == null)
+                    index = tooltips.IndexOf(damageLine);
+
+                if (critLine != null || damageLine != null)
+                    tooltips.Insert(index + 1, new TooltipLine(Mod, "CritMult", Language.GetTextValue("Mods.PacnyRefresh.Mechanics.CritMult", updatedCritMod)));
+                //tooltips.Insert(index + 1, new TooltipLine(Mod, "CritMult", $"{updatedCritMod}x critical strike multiplier"));
+            }
+        }*/
 
         public override void SetDefaults(Item item)
         {
