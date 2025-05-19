@@ -219,8 +219,6 @@ namespace PacnyRefresh.Items.Gem
 
                         item.mana = 12;
 
-                        item.crit = -2;
-
                         item.rare = ItemRarityID.Orange;
                         break;
                     }
