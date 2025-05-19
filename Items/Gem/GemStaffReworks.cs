@@ -64,11 +64,24 @@ namespace PacnyRefresh.Items.Gem
                 }
                 if (recipe.HasIngredient(ItemID.FossilOre) && recipe.HasIngredient(ItemID.Amber) && recipe.HasTile(TileID.Anvils) && recipe.HasResult(ItemID.AmberStaff))
                 {
-                    recipe.RemoveIngredient(ItemID.Amber);
-                    recipe.AddIngredient(ItemID.Obsidian, 10);
-                    recipe.AddIngredient(ItemID.Amber, 8);
+                    recipe.DisableRecipe();
                 }
             }
+            Recipe amberStaffCorro = Recipe.Create(ItemID.AmberStaff, 1)
+                .AddIngredient(ItemID.FossilOre, 15)
+                .AddIngredient(ItemID.Obsidian, 10)
+                .AddIngredient(ItemID.ShadowScale, 5)
+                .AddIngredient(ItemID.Amber, 8)
+                .AddTile(TileID.Anvils)
+                .Register();
+
+            Recipe amberStaffCrim = Recipe.Create(ItemID.AmberStaff, 1)
+            .AddIngredient(ItemID.FossilOre, 15)
+            .AddIngredient(ItemID.Obsidian, 10)
+            .AddIngredient(ItemID.TissueSample, 5)
+            .AddIngredient(ItemID.Amber, 8)
+            .AddTile(TileID.Anvils)
+            .Register();
         }
     }
 
@@ -139,6 +152,8 @@ namespace PacnyRefresh.Items.Gem
                         item.crit = 4;
 
                         item.mana = 6;
+
+                        item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
                     }
                 case ItemID.TopazStaff:
@@ -151,6 +166,8 @@ namespace PacnyRefresh.Items.Gem
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
 
                         item.mana = 7;
+
+                        item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
                     }
                 case ItemID.SapphireStaff:
@@ -163,6 +180,8 @@ namespace PacnyRefresh.Items.Gem
                         item.shootSpeed = 28f;
 
                         item.mana = 8;
+
+                        item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
                     }
                 case ItemID.EmeraldStaff:
@@ -178,6 +197,8 @@ namespace PacnyRefresh.Items.Gem
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.25f;
 
                         item.mana = 8;
+
+                        item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
                     }
                 case ItemID.RubyStaff:
@@ -187,12 +208,14 @@ namespace PacnyRefresh.Items.Gem
 
                         item.reuseDelay = 15;
 
-                        item.damage = 19;
+                        item.damage = 18;
                         item.shootSpeed = 1.5f;
 
                         item.rare = ItemRarityID.Green;
 
                         item.mana = 9;
+
+                        item.UseSound = SoundID.Item102;
                         break;
                     }
                 case ItemID.DiamondStaff:
@@ -203,6 +226,8 @@ namespace PacnyRefresh.Items.Gem
                         item.damage = 7;
                         item.useTime = 10;
                         item.useAnimation = 20;
+
+                        item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.2f };
                         break;
                     }
                 case ItemID.AmberStaff:
@@ -214,8 +239,10 @@ namespace PacnyRefresh.Items.Gem
                         item.useAnimation = 15;
                         item.reuseDelay = 45;
 
-                        item.damage = 18;
+                        item.damage = 19;
                         item.GetGlobalItem<PacnyItem>().critDamageMod = -0.5f;
+
+                        item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 1.2f, Pitch = 0.6f, PitchVariance = 0.4f };
 
                         item.mana = 12;
 
@@ -279,33 +306,43 @@ namespace PacnyRefresh.Items.Gem
         {
             int dustType = 0;
 
-            if (item.type == ItemID.AmethystStaff)
+            switch (item.type)
             {
-                dustType = DustID.GemAmethyst;
-            }
-            if (item.type == ItemID.TopazStaff)
-            {
-                dustType = DustID.GemTopaz;
-            }
-            if (item.type == ItemID.SapphireStaff)
-            {
-                dustType = DustID.GemSapphire;
-            }
-            if (item.type == ItemID.EmeraldStaff)
-            {
-                dustType = DustID.GemEmerald;
-            }
-            if (item.type == ItemID.RubyStaff)
-            {
-                dustType = DustID.GemRuby;
-            }
-            if (item.type == ItemID.DiamondStaff)
-            {
-                dustType = DustID.GemDiamond;
-            }
-            if (item.type == ItemID.AmberStaff)
-            {
-                dustType = DustID.AmberBolt;
+                case ItemID.AmethystStaff:
+                    {
+                        dustType = DustID.GemAmethyst;
+                        break;
+                    }
+                case ItemID.TopazStaff:
+                    {
+                        dustType = DustID.GemTopaz;
+                        break;
+                    }
+                case ItemID.SapphireStaff:
+                    {
+                        dustType = DustID.GemSapphire;
+                        break;
+                    }
+                case ItemID.EmeraldStaff:
+                    {
+                        dustType = DustID.GemEmerald;
+                        break;
+                    }
+                case ItemID.RubyStaff:
+                    {
+                        dustType = DustID.GemRuby;
+                        break;
+                    }
+                case ItemID.DiamondStaff:
+                    {
+                        dustType = DustID.GemDiamond;
+                        break;
+                    }
+                case ItemID.AmberStaff:
+                    {
+                        dustType = DustID.AmberBolt;
+                        break;
+                    }
             }
 
             for (float k = 0; k < Math.PI * 2; k += Main.rand.NextFloat(0.1f, 0.24f))
@@ -324,17 +361,24 @@ namespace PacnyRefresh.Items.Gem
             {
                 int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 Main.projectile[p].velocity.Y -= 3.8f;
+                SoundEngine.PlaySound(SoundID.Item110, position);
                 return false;
             }
+
             if (item.type == ItemID.DiamondStaff)
             {
                 int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians((float)Math.Sin(PacnySystem.rottime * 8))) * 4f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
             }
-            if (item.type == ItemID.AmberStaff)
+            else if (item.type == ItemID.AmberStaff)
             {
+                SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Volume = 0.75f, Pitch = 0.2f, PitchVariance = 0.4f, MaxInstances = 3 }, position);
                 Projectile p = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI, Main.rand.NextFloat(-3, 3));
                 p.scale = Main.rand.NextFloat(0.7f, 1.3f);
                 return false;
+            }
+            else 
+            {
+                SoundEngine.PlaySound(SoundID.Item110, position);
             }
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
@@ -342,6 +386,12 @@ namespace PacnyRefresh.Items.Gem
         public class GemStaffReworkProjectile : GlobalProjectile
         {
             public override bool InstancePerEntity => true;
+            public static readonly int[] gemBolts = [ProjectileID.AmethystBolt, ProjectileID.TopazBolt, ProjectileID.SapphireBolt, ProjectileID.EmeraldBolt, ProjectileID.RubyBolt, ProjectileID.DiamondBolt, ProjectileID.AmberBolt];
+
+            public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+            {
+                return gemBolts.Contains(entity.type);
+            }
 
             public override void SetDefaults(Projectile entity)
             {
@@ -458,15 +508,19 @@ namespace PacnyRefresh.Items.Gem
             {
                 if (projectile.type == ProjectileID.RubyBolt)
                 {
-                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, projectile.Center);
 
-                    int i = Main.rand.Next(7, 10);
+                    int i = Main.rand.Next(6, 8);
                     for (float k = 0; k < i; k++)
                     {
                         Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), projectile.damage / 2, 0, projectile.owner, 0f, 0f);
                         p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
                         p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
                     }
+                }
+                else if (projectile.type != ProjectileID.DiamondBolt)
+                {
+                    SoundEngine.PlaySound(SoundID.Item118, projectile.Center);
                 }
                 if (projectile.type == ProjectileID.SapphireBolt)
                 {
