@@ -134,7 +134,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 30;
                         item.height = 30;
 
-                        item.damage = 16;
+                        item.damage = 15;
                         item.ArmorPenetration = 10;
                         item.crit = 4;
 
@@ -146,7 +146,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 32;
                         item.height = 32;
 
-                        item.damage = 15;
+                        item.damage = 14;
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
 
@@ -158,7 +158,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 34;
                         item.height = 34;
 
-                        item.damage = 17;
+                        item.damage = 16;
                         item.crit = 6;
                         item.shootSpeed = 28f;
 
@@ -170,7 +170,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 38;
                         item.height = 34;
 
-                        item.damage = 18;
+                        item.damage = 17;
                         item.shootSpeed = 14.5f;
                         item.useTime = 42;
                         item.useAnimation = 42;
@@ -187,7 +187,7 @@ namespace PacnyRefresh.Items.Gem
 
                         item.reuseDelay = 15;
 
-                        item.damage = 21;
+                        item.damage = 19;
                         item.shootSpeed = 1.5f;
 
                         item.rare = ItemRarityID.Green;
@@ -200,7 +200,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 36;
                         item.height = 36;
 
-                        item.damage = 8;
+                        item.damage = 7;
                         item.useTime = 10;
                         item.useAnimation = 20;
                         break;
@@ -214,7 +214,7 @@ namespace PacnyRefresh.Items.Gem
                         item.useAnimation = 15;
                         item.reuseDelay = 45;
 
-                        item.damage = 19;
+                        item.damage = 18;
                         item.GetGlobalItem<PacnyItem>().critDamageMod = -0.5f;
 
                         item.mana = 12;
