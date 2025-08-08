@@ -52,15 +52,19 @@ namespace PacnyRefresh.Core
 
         public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
+            binaryWriter.Write(projectile.extraUpdates);
             binaryWriter.Write(counter);
             binaryWriter.Write(gravity);
+            binaryWriter.Write(gravityDelay);
             binaryWriter.Write(critDamageMod);
         }
 
         public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
         {
+            projectile.extraUpdates = binaryReader.ReadInt32();
             counter = binaryReader.ReadInt32();
             gravity = binaryReader.ReadInt32();
+            gravityDelay = binaryReader.ReadInt32();
             critDamageMod = binaryReader.ReadSingle();
         }
 

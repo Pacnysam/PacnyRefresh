@@ -52,10 +52,9 @@ namespace PacnyRefresh.Core.Bases.Projectiles
         public float swingDistance = swingDistance;
         //public float killDistance = killDistance;
 
-        public float State;
+        public ref float State => ref Projectile.ai[0];
         public float DecelerationTimer;
 
-        //public ref float State => ref Projectile.ai[0];
         //public ref float DecelerationTimer => ref Projectile.ai[1];
 
         public enum FlailStates : int
@@ -84,21 +83,35 @@ namespace PacnyRefresh.Core.Bases.Projectiles
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write(State);
+            writer.Write(throwRange);
+            writer.Write(fallSpeed);
+            writer.Write(throwSpeed);
+            writer.Write(swingSpeed);
+            writer.Write(doRotation);
+            writer.Write(swingDistance);
+
+            //writer.Write(State);
             writer.Write(DecelerationTimer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            State = reader.Read();
-            DecelerationTimer = reader.Read();
+            throwRange = reader.ReadSingle();
+            fallSpeed = reader.ReadSingle();
+            throwSpeed = reader.ReadSingle();
+            swingSpeed = reader.ReadSingle();
+            doRotation = reader.ReadBoolean();
+            swingDistance = reader.ReadSingle();
+
+            //State = reader.ReadSingle();
+            DecelerationTimer = reader.ReadSingle();
         }
 
-        public virtual void ThrowEffect(Player player) { }
-        public virtual void DropSlamEffect(Player player) { }
-        public virtual void TileStrikeEffect(Player player) { }
-        public virtual void SpinEffect(Player player) { }
-        public virtual void ApexEffect(Player player) { }
+        public virtual void ThrowEffect(Player player) {}
+        public virtual void DropSlamEffect(Player player) {}
+        public virtual void TileStrikeEffect(Player player) {}
+        public virtual void SpinEffect(Player player) {}
+        public virtual void ApexEffect(Player player) {}
         public virtual void RealAI() { }
 
         float MeleeSpeed => Main.player[Projectile.owner].GetAttackSpeed(DamageClass.Melee);

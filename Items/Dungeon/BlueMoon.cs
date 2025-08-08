@@ -20,6 +20,7 @@ using System.Linq;
 using PacnyRefresh.Core;
 using PacnyRefresh.Core.Bases.Projectiles;
 using ReLogic.Content;
+using Terraria.Graphics.CameraModifiers;
 
 namespace PacnyRefresh.Items.Dungeon
 {
@@ -41,7 +42,8 @@ namespace PacnyRefresh.Items.Dungeon
             if (entity.type == ItemID.BlueMoon)
             {
                 entity.shoot = ProjectileType<BlueMoonP>();
-                //entity.damage = 23;
+                entity.damage = 24;
+                entity.knockBack = 7.25f;
                 entity.width = 34; entity.height = 32;
             }
         }
@@ -81,7 +83,7 @@ namespace PacnyRefresh.Items.Dungeon
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
-        ref float Charge => ref Projectile.ai[0];
+        ref float Charge => ref Projectile.ai[1];
         int timesSlammed = 0;
         const int CHARGETIME = 75;
 
@@ -122,7 +124,7 @@ namespace PacnyRefresh.Items.Dungeon
 
             if (Charge > 100) Charge = 100;
 
-            throwRange = Math.Clamp(Charge * 4, 220, 360);
+            throwRange = Math.Clamp(Charge * 4, 180, 360);
             swingDistance = 10 + (int)(Charge / 2);
             swingSpeed = 2.5f + (Charge / 20);
 
@@ -162,9 +164,11 @@ namespace PacnyRefresh.Items.Dungeon
         {
             if (timesSlammed < 1 && Charge >= CHARGETIME && State != (int)FlailStates.Returning && State != (int)FlailStates.ReturningFinal)
             {
+                timesSlammed++;
+                Projectile.netUpdate = true;
+
                 if (Main.myPlayer == Projectile.owner)
                 {
-                    timesSlammed++;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<WaterBurst>(), 0, 0, player.whoAmI);
 
                     for (float k = 0; k < Main.rand.Next(9, 11); k++)
@@ -173,18 +177,24 @@ namespace PacnyRefresh.Items.Dungeon
 
                         if (State != (int)FlailStates.Dropping)
                         {
-                            newVelocity = new Vector2(Projectile.velocity.X * 0.3f, Projectile.velocity.Y) + new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-7f, 5f));
+                            newVelocity = new Vector2(Projectile.velocity.X * 0.45f, Projectile.velocity.Y * 1.45f) + new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-8f, 5.5f));
                         }
 
-                        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, newVelocity, ProjectileID.WaterBolt, (int)(Projectile.damage * 0.5f), 0, player.whoAmI, 3);
-                        proj.GetGlobalProjectile<PacnyProjectile>().gravity = 0.55f;
+                        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, newVelocity, ProjectileType<WaterBoltGravity>(), (int)(Projectile.damage * 0.5f), 0, player.whoAmI, 3);
                         proj.DamageType = DamageClass.Melee;
+                        proj.netUpdate = true;
                     }
                 }
-                Helper.AddScreenshake(Main.LocalPlayer, 18, Projectile.Center);
+                
+                if (!Main.dedServ)
+                {
+                    //Helper.AddScreenshake(Main.LocalPlayer, 18, Projectile.Center);
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity.SafeNormalize(Vector2.One), 25f * GetInstance<GraphicsConfig>().ShakeIntensity, 6.5f, 30, 1500));
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, new Vector2(Projectile.velocity.Y, Projectile.velocity.X).SafeNormalize(Vector2.One), 13.5f * GetInstance<GraphicsConfig>().ShakeIntensity, 12, 25, 1500));
 
-                SoundEngine.PlaySound(new SoundStyle("PacnyRefresh/Sounds/HeavyThump") { Volume = 0.5f, PitchVariance = 0.5f }, Projectile.position);
-                SoundEngine.PlaySound(new SoundStyle("PacnyRefresh/Sounds/JellyfishMiniDeath") { Volume = 1.5f, PitchVariance = 0.6f }, Projectile.position);
+                    SoundEngine.PlaySound(new SoundStyle("PacnyRefresh/Sounds/HeavyThump") { Volume = 0.5f, PitchVariance = 0.5f }, Projectile.position);
+                    SoundEngine.PlaySound(new SoundStyle("PacnyRefresh/Sounds/JellyfishMiniDeath") { Volume = 1.65f, Pitch = - 0.3f, PitchVariance = 0.6f }, Projectile.position);
+                }
             }
             else
             {
@@ -248,10 +258,24 @@ namespace PacnyRefresh.Items.Dungeon
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
             Vector2 drawOrigin = new(texture.Width * 0.5f, Projectile.height * 0.5f);
-            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(Request<Texture2D>("PacnyRefresh/Items/Dungeon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(Request<Texture2D>("PacnyRefresh/Items/Dungeon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
             return false;
+        }
+    }
+
+    public class WaterBoltGravity : ModProjectile
+    {
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.WaterBolt;
+        public override void SetDefaults()
+        {
+            Projectile.CloneDefaults(ProjectileID.WaterBolt);
+            AIType = ProjectileID.WaterBolt;
+        }
+        public override void AI()
+        {
+            Projectile.velocity.Y += 0.55f;
         }
     }
 

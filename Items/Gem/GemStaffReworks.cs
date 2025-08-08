@@ -148,7 +148,7 @@ namespace PacnyRefresh.Items.Gem
                         item.height = 30;
 
                         item.damage = 15;
-                        item.ArmorPenetration = 10;
+                        item.ArmorPenetration = 5;
                         item.crit = 4;
 
                         item.mana = 6;
@@ -161,7 +161,7 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 32;
                         item.height = 32;
 
-                        item.damage = 14;
+                        item.damage = 15;
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
 
@@ -208,7 +208,7 @@ namespace PacnyRefresh.Items.Gem
 
                         item.reuseDelay = 15;
 
-                        item.damage = 18;
+                        item.damage = 20;
                         item.shootSpeed = 1.5f;
 
                         item.rare = ItemRarityID.Green;
@@ -226,6 +226,7 @@ namespace PacnyRefresh.Items.Gem
                         item.height = 36;
 
                         item.damage = 7;
+                        item.ArmorPenetration = 5;
                         item.useTime = 10;
                         item.useAnimation = 20;
 
@@ -245,6 +246,7 @@ namespace PacnyRefresh.Items.Gem
 
                         item.damage = 19;
                         item.GetGlobalItem<PacnyItem>().critDamageMod = -0.5f;
+                        item.ArmorPenetration = 5;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 1.2f, Pitch = 0.6f, PitchVariance = 0.4f };
 
@@ -359,7 +361,7 @@ namespace PacnyRefresh.Items.Gem
 
             if (item.type == ItemID.TopazStaff)
             {
-                int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-9, 9))) * 0.85f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
+                int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-9, 9))) * 0.85f, type, (int)(damage * 0.75f), knockback, player.whoAmI);
                 Main.projectile[p].scale *= 0.6f;
             }
             if (item.type == ItemID.EmeraldStaff)
@@ -463,8 +465,8 @@ namespace PacnyRefresh.Items.Gem
             }
             if (projectile.type == ProjectileID.RubyBolt)
             {
-                projectile.velocity *= 1.05f;
-                if (projectile.velocity.Length() > 15f)
+                projectile.velocity *= 1.075f;
+                if (projectile.velocity.Length() > 15.5f)
                 {
                     projectile.velocity = Vector2.Normalize(projectile.velocity) * 15f;
                     projectile.extraUpdates = 1;
@@ -520,7 +522,7 @@ namespace PacnyRefresh.Items.Gem
                 int i = Main.rand.Next(6, 8);
                 for (float k = 0; k < i; k++)
                 {
-                    Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), projectile.damage / 2, 0, projectile.owner, 0f, 0f);
+                    Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), (int)(projectile.damage * 0.75f), 0, projectile.owner, 0f, 0f);
                     p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
                     p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
                 }
@@ -628,7 +630,7 @@ namespace PacnyRefresh.Items.Gem
                         projectile.damage /= 2;
                         if (hit.Crit)
                         {
-                            target.AddBuff(BuffType<AmberStun>(), 120);
+                            target.AddBuff(BuffType<AmberStun>(), 60);
                             SoundEngine.PlaySound(SoundID.Item150, projectile.Center);
                             SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, projectile.Center);
                             ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.ChlorophyteLeafCrystalShot,
