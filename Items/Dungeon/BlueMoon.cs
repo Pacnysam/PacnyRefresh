@@ -136,7 +136,7 @@ namespace PacnyRefresh.Items.Dungeon
 
                 for (float k = 0; k < 6.28f; k += 6.28f / 40)
                 {
-                    Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, ColorHelper.AdditiveWhite, 2.5f);
+                    Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, ColorHelper.AdditiveWhite(), 2.5f);
                     dust.noGravity = true;
                 }
             }
@@ -259,8 +259,8 @@ namespace PacnyRefresh.Items.Dungeon
 
             Vector2 drawOrigin = new(texture.Width * 0.5f, Projectile.height * 0.5f);
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.EntitySpriteDraw(Request<Texture2D>("PacnyRefresh/Items/Dungeon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite() * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(Request<Texture2D>("PacnyRefresh/Items/Dungeon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite() * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
     }

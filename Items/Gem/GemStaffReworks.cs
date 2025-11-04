@@ -147,11 +147,10 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 30;
                         item.height = 30;
 
-                        item.damage = 15;
-                        item.ArmorPenetration = 5;
+                        item.damage = 13;
                         item.crit = 4;
 
-                        item.mana = 6;
+                        item.mana = 4;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
@@ -161,11 +160,11 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 32;
                         item.height = 32;
 
-                        item.damage = 15;
+                        item.damage = 14;
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
 
-                        item.mana = 7;
+                        item.mana = 4;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
@@ -175,28 +174,28 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 34;
                         item.height = 34;
 
-                        item.damage = 16;
+                        item.damage = 15;
                         item.crit = 6;
                         item.shootSpeed = 28f;
 
-                        item.mana = 8;
+                        item.mana = 6;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
                     }
                 case ItemID.EmeraldStaff:
                     {
-                        item.width = 38;
+                        item.width = 34;
                         item.height = 34;
 
-                        item.damage = 17;
+                        item.damage = 16;
                         item.shootSpeed = 14.5f;
                         item.useTime = 42;
                         item.useAnimation = 42;
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.25f;
 
-                        item.mana = 8;
+                        item.mana = 7;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
@@ -206,9 +205,9 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 34;
                         item.height = 34;
 
-                        item.reuseDelay = 15;
+                        item.reuseDelay = 32;
 
-                        item.damage = 20;
+                        item.damage = 17;
                         item.shootSpeed = 1.5f;
 
                         item.rare = ItemRarityID.Green;
@@ -217,7 +216,7 @@ namespace PacnyRefresh.Items.Gem
 
                         item.UseSound = SoundID.Item102;
 
-                        item.value = Item.sellPrice(0, 1, 0, 0);
+                        item.value = Item.sellPrice(0, 1, 50, 0);
                         break;
                     }
                 case ItemID.DiamondStaff:
@@ -225,14 +224,14 @@ namespace PacnyRefresh.Items.Gem
                         item.width = 36;
                         item.height = 36;
 
-                        item.damage = 7;
-                        item.ArmorPenetration = 5;
+                        item.damage = 8;
+                        item.ArmorPenetration = 20;
                         item.useTime = 10;
                         item.useAnimation = 20;
 
                         item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.2f };
 
-                        item.value = Item.sellPrice(0, 1, 0, 0);
+                        item.value = Item.sellPrice(0, 1, 50, 0);
                         break;
                     }
                 case ItemID.AmberStaff:
@@ -244,7 +243,7 @@ namespace PacnyRefresh.Items.Gem
                         item.useAnimation = 15;
                         item.reuseDelay = 45;
 
-                        item.damage = 19;
+                        item.damage = 18;
                         item.GetGlobalItem<PacnyItem>().critDamageMod = -0.5f;
                         item.ArmorPenetration = 5;
 
@@ -253,7 +252,7 @@ namespace PacnyRefresh.Items.Gem
                         item.mana = 12;
 
                         item.rare = ItemRarityID.Orange;
-                        item.value = Item.sellPrice(0, 2, 0, 0);
+                        item.value = Item.sellPrice(0, 3, 0, 0);
                         break;
                     }
             }
@@ -372,11 +371,7 @@ namespace PacnyRefresh.Items.Gem
                 return false;
             }
 
-            if (item.type == ItemID.DiamondStaff)
-            {
-                int p = Projectile.NewProjectile(source, position, velocity.RotatedBy(MathHelper.ToRadians((float)Math.Sin(PacnySystem.rottime * 8))) * 4f, type, (int)(damage * 0.7f), knockback, player.whoAmI);
-            }
-            else if (item.type == ItemID.AmberStaff)
+            if (item.type == ItemID.AmberStaff)
             {
                 SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Volume = 0.75f, Pitch = 0.2f, PitchVariance = 0.4f, MaxInstances = 3 }, position);
                 Projectile p = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI, Main.rand.NextFloat(-3, 3));
@@ -415,30 +410,33 @@ namespace PacnyRefresh.Items.Gem
                 case ProjectileID.AmethystBolt:
                     {
                         entity.netImportant = true;
-                        entity.timeLeft = 300;
                         break;
                     }
                 case ProjectileID.TopazBolt:
                     {
-                        entity.timeLeft = 300;
+                        break;
+                    }
+                case ProjectileID.SapphireBolt:
+                    {
+                        entity.penetrate = 1;
                         break;
                     }
                 case ProjectileID.EmeraldBolt:
                     {
-                        entity.timeLeft = 180;
+                        entity.penetrate = 1;
                         break;
                     }
                 case ProjectileID.RubyBolt:
                     {
-                        entity.penetrate = 1;
+                        entity.penetrate = 2;
                         break;
                     }
                 case ProjectileID.DiamondBolt:
                     {
                         entity.extraUpdates = 20;
-                        entity.penetrate = 2;
+                        entity.penetrate = 4;
                         entity.usesLocalNPCImmunity = true;
-                        entity.localNPCHitCooldown = 10;
+                        entity.localNPCHitCooldown = -1;
                         break;
                     }
                 case ProjectileID.AmberBolt:
@@ -453,141 +451,165 @@ namespace PacnyRefresh.Items.Gem
 
         public override void AI(Projectile projectile)
         {
-            if (projectile.type == ProjectileID.SapphireBolt)
-            {
-                projectile.velocity *= 0.95f;
-                if (projectile.velocity.Length() <= 0.1f)
-                    projectile.Kill();
-            }
-            if (projectile.type == ProjectileID.EmeraldBolt)
-            {
-                projectile.velocity.Y += 0.35f;
-            }
-            if (projectile.type == ProjectileID.RubyBolt)
-            {
-                projectile.velocity *= 1.075f;
-                if (projectile.velocity.Length() > 15.5f)
-                {
-                    projectile.velocity = Vector2.Normalize(projectile.velocity) * 15f;
-                    projectile.extraUpdates = 1;
-                }
+            rottime += (float)Math.PI / 60;
+            if (rottime >= Math.PI * 2) rottime = 0;
 
-                if (projectile.GetGlobalProjectile<PacnyProjectile>().counter % 8 == 0)
-                {
-                    for (float k = 0; k < Math.PI * 2; k += (float)Math.PI / 30)
+            switch (projectile.type)
+            {
+                case ProjectileID.AmethystBolt:
                     {
-                        Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemRuby, Vector2.One.RotatedBy(k) * 0.9f, 0, Color.White, 1f);
+                        if (projectile.Counter() < TimeToTicks(2))
+                        {
+                            projectile.velocity = projectile.velocity.Length() * Vector2.Lerp(projectile.velocity, projectile.DirectionTo(Main.MouseWorld) * projectile.velocity.Length() * 0.5f, 0.2f).SafeNormalize(Vector2.Normalize(projectile.velocity));
+                            projectile.netUpdate = true;
+                        }
+                        break;
+                    }
+                case ProjectileID.TopazBolt:
+                    {
+                        break;
+                    }
+                case ProjectileID.SapphireBolt:
+                    {
+                        projectile.velocity *= 0.95f;
+
+                        if (projectile.velocity.Length() <= 0.1f)
+                            projectile.Kill();
+                        break;
+                    }
+                case ProjectileID.EmeraldBolt:
+                    {
+                        projectile.velocity.Y += 0.35f;
+
+                        if (projectile.timeLeft % 5 == 0 && projectile.Counter() < TimeToTicks(1) + 20 && projectile.Counter() > 10)
+                        {
+                            Projectile emerald = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), new Vector2(projectile.Bottom.X, projectile.Bottom.Y + Main.rand.NextFloat(-4, 4)), Vector2.Zero, ProjectileType<FallingEmerald>(), (int)(projectile.damage * 0.55f), projectile.knockBack * 0.3f, projectile.owner);
+                            emerald.DamageType = DamageClass.Magic;
+                        }
+                        break;
+                    }
+                case ProjectileID.RubyBolt:
+                    {
+                        projectile.velocity *= 1.075f;
+                        if (projectile.velocity.Length() > 15.5f)
+                        {
+                            projectile.velocity = Vector2.Normalize(projectile.velocity) * 15f;
+                            projectile.extraUpdates = 1;
+                        }
+
+                        if (projectile.GetGlobalProjectile<PacnyProjectile>().counter % 8 == 0)
+                        {
+                            for (float k = 0; k < Math.PI * 2; k += (float)Math.PI / 30)
+                            {
+                                Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemRuby, Vector2.One.RotatedBy(k) * 0.9f, 0, Color.White, 1f);
+                                dust.noGravity = true;
+                            }
+                        }
+                        break;
+                    }
+                case ProjectileID.DiamondBolt:
+                    {
+                        Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemDiamond, Vector2.Zero, 0, Color.White, 1f);
                         dust.noGravity = true;
+                        break;
                     }
-                }
-            }
-            if (projectile.type == ProjectileID.AmberBolt)
-            {
-                const int homingRange = 150;
-
-                float targetDistance = 8000f;
-                int target = -1;
-                for (int i = 0; i < 200; i++)
-                {
-                    float range = Vector2.Distance(projectile.Center, Main.npc[i].Center);
-                    if (range < targetDistance && range < homingRange && Main.npc[i].active && Main.npc[i].CanBeChasedBy(projectile, false))
+                case ProjectileID.AmberBolt:
                     {
-                        target = i;
-                        targetDistance = range;
+                        const int homingRange = 150;
+
+                        float targetDistance = 8000f;
+                        NPC target = null;
+
+                        foreach (NPC npc in Main.ActiveNPCs)
+                        {
+                            float range = Vector2.Distance(projectile.Center, npc.Center);
+                            if (range < targetDistance && range < homingRange && npc.active && npc.CanBeChasedBy(projectile, false))
+                            {
+                                target = npc;
+                                targetDistance = range;
+                            }
+                        }
+                        if (target != null && Collision.CanHit(projectile.position, projectile.width, projectile.height, target.position, target.width, target.height))
+                        {
+                            projectile.velocity += Vector2.Normalize(target.Center - projectile.Center) * 3f;
+
+                            if (projectile.velocity.Length() > 12.5f)
+                                projectile.velocity = Vector2.Normalize(projectile.velocity) * 12.5f;
+                        }
+
+                        if (targetDistance > homingRange)
+                        {
+                            projectile.velocity.Y += (float)Math.Sin((rottime + projectile.ai[0]) * 8) * Math.Clamp(projectile.Counter() * 0.1f, 0f, 1.5f);
+                        }
+                        else
+                            projectile.velocity.Y += (float)Math.Sin((rottime + projectile.ai[0]) * 6) * 0.5f;
+                        break;
                     }
-                }
-                if (target != -1 && Collision.CanHit(projectile.position, projectile.width, projectile.height, Main.npc[target].position, Main.npc[target].width, Main.npc[target].height))
-                {
-                    projectile.velocity += Vector2.Normalize(Main.npc[target].Center - projectile.Center) * 3f;
-
-                    if (projectile.velocity.Length() > 12.5f)
-                        projectile.velocity = Vector2.Normalize(projectile.velocity) * 12.5f;
-                }
-
-                if (targetDistance > homingRange)
-                {
-                    projectile.velocity.Y += (float)Math.Sin((rottime + projectile.ai[0]) * 8) * Math.Clamp(projectile.GetGlobalProjectile<PacnyProjectile>().counter * 0.1f, 0f, 1.5f);
-                }
-                else
-                    projectile.velocity.Y += (float)Math.Sin((rottime + projectile.ai[0]) * 6) * 0.5f;
             }
         }
 
         public override void OnKill(Projectile projectile, int timeLeft)
         {
-            if (projectile.type == ProjectileID.RubyBolt)
+            switch (projectile.type)
             {
-                SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, projectile.Center);
-
-                int i = Main.rand.Next(6, 8);
-                for (float k = 0; k < i; k++)
-                {
-                    Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), (int)(projectile.damage * 0.75f), 0, projectile.owner, 0f, 0f);
-                    p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
-                    p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
-                }
-            }
-            else if (projectile.type != ProjectileID.DiamondBolt)
-            {
-                SoundEngine.PlaySound(SoundID.Item118, projectile.Center);
-            }
-            if (projectile.type == ProjectileID.SapphireBolt)
-            {
-                for (float i = 0; i < 12; ++i)
-                {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemSapphire, new Vector2(0f, -3f).RotatedByRandom(MathHelper.Pi).RotatedBy(MathHelper.TwoPi * i / 8) * Vector2.One * (0.6f + Main.rand.NextFloat() * 0.35f), 0, Color.White, 1.5f);
-                    dust.noGravity = true;
-                    dust.fadeIn = Main.rand.NextFloat() * 2f;
-                    var dust2 = Dust.CloneDust(dust);
-                    dust2.scale *= 0.5f;
-                    dust2.fadeIn *= 0.5f;
-                }
-            }
-            if (projectile.type == ProjectileID.AmberBolt)
-            {
-                for (float i = 0; i < 12; ++i)
-                {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.AmberBolt, new Vector2(0f, -3f).RotatedByRandom(MathHelper.Pi).RotatedBy(MathHelper.TwoPi * i / 8) * Vector2.One * (0.6f + Main.rand.NextFloat() * 0.35f), 0, Color.White, 1.5f);
-                    dust.noGravity = true;
-                    dust.fadeIn = Main.rand.NextFloat() * 2f;
-                    var dust2 = Dust.CloneDust(dust);
-                    dust2.scale *= 0.5f;
-                    dust2.fadeIn *= 0.5f;
-                }
-            }
-        }
-
-        public override void PostAI(Projectile projectile)
-        {
-            rottime += (float)Math.PI / 60;
-            if (rottime >= Math.PI * 2) rottime = 0;
-
-            if (projectile.type == ProjectileID.AmethystBolt)
-            {
-                projectile.velocity = projectile.velocity.Length() * Vector2.Lerp(projectile.velocity, projectile.DirectionTo(Main.MouseWorld) * projectile.velocity.Length() * 0.5f, 0.2f).SafeNormalize(Vector2.Normalize(projectile.velocity));
-                projectile.netUpdate = true;
-            }
-            if (projectile.type == ProjectileID.EmeraldBolt && projectile.timeLeft % 5 == 0 && projectile.timeLeft > 90)
-            {
-                int emerald = Projectile.NewProjectile(projectile.GetSource_FromAI(), new Vector2(projectile.Bottom.X, projectile.Bottom.Y + Main.rand.NextFloat(-4, 4)), Vector2.Zero, ProjectileType<FallingEmerald>(), (int)(projectile.damage * 0.55f), projectile.knockBack * 0.3f, projectile.owner);
-                Main.projectile[emerald].DamageType = DamageClass.Magic;
+                case ProjectileID.SapphireBolt:
+                    {
+                        for (float i = 0; i < 12; ++i)
+                        {
+                            Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.GemSapphire, new Vector2(0f, -3f).RotatedByRandom(MathHelper.Pi).RotatedBy(MathHelper.TwoPi * i / 8) * Vector2.One * (0.6f + Main.rand.NextFloat() * 0.35f), 0, Color.White, 1.5f);
+                            dust.noGravity = true;
+                            dust.fadeIn = Main.rand.NextFloat() * 2f;
+                            var dust2 = Dust.CloneDust(dust);
+                            dust2.scale *= 0.5f;
+                            dust2.fadeIn *= 0.5f;
+                        }
+                        break;
+                    }
+                case ProjectileID.AmberBolt:
+                    {
+                        for (float i = 0; i < 12; ++i)
+                        {
+                            Dust dust = Dust.NewDustPerfect(projectile.Center, DustID.AmberBolt, new Vector2(0f, -3f).RotatedByRandom(MathHelper.Pi).RotatedBy(MathHelper.TwoPi * i / 8) * Vector2.One * (0.6f + Main.rand.NextFloat() * 0.35f), 0, Color.White, 1.5f);
+                            dust.noGravity = true;
+                            dust.fadeIn = Main.rand.NextFloat() * 2f;
+                            var dust2 = Dust.CloneDust(dust);
+                            dust2.scale *= 0.5f;
+                            dust2.fadeIn *= 0.5f;
+                        }
+                        break;
+                    }
             }
         }
 
         public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
         {
-            if (projectile.type == ProjectileID.TopazBolt)
+            switch (projectile.type)
             {
-                if (projectile.velocity.X != oldVelocity.X)
-                {
-                    projectile.velocity.X = -oldVelocity.X;
-                }
+                case ProjectileID.TopazBolt:
+                    {
+                        if (projectile.velocity.X != oldVelocity.X)
+                        {
+                            projectile.velocity.X = -oldVelocity.X;
+                        }
+                        if (projectile.velocity.Y != oldVelocity.Y)
+                        {
+                            projectile.velocity.Y = -oldVelocity.Y;
+                        }
+                        return false;
+                    }
+                case ProjectileID.RubyBolt:
+                    {
+                        SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, projectile.Center);
 
-                if (projectile.velocity.Y != oldVelocity.Y)
-                {
-                    projectile.velocity.Y = -oldVelocity.Y;
-                }
-                return false;
+                        int i = Main.rand.Next(5, 7);
+                        for (float k = 0; k < i; k++)
+                        {
+                            Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), projectile.Center, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), (int)(projectile.damage * 0.5f), 0, projectile.owner, 0f, 0f);
+                            p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
+                            p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
+                        }
+                        break;
+                    }
             }
             return base.OnTileCollide(projectile, oldVelocity);
         }
@@ -615,14 +637,22 @@ namespace PacnyRefresh.Items.Gem
                         Main.player[projectile.owner].GetModPlayer<GemStaffPlayer>().sapphireHits++;
                         break;
                     }
+                case ProjectileID.RubyBolt:
+                    {
+                        SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, projectile.Center);
+                        
+                        for (float k = 0; k < projectile.damage * 0.45f; k++)
+                        {
+                            Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), target.Top, new Vector2(Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-10, -1.5f)), ProjectileType<BasicRubyBolt>(), (int)(projectile.damage * 0.5f), 0, projectile.owner, 0f, 0f);
+                            p.GetGlobalProjectile<PacnyProjectile>().gravity = Main.rand.NextFloat(0.1f, 0.3f);
+                            p.GetGlobalProjectile<PacnyProjectile>().spawnTime = 10;
+                        }
+                        projectile.damage /= 2;
+                        break;
+                    }
                 case ProjectileID.DiamondBolt:
                     {
-                        if (hit.Crit)
-                        {
-                            projectile.damage -= 1;
-                            projectile.penetrate += 1;
-                            projectile.CritChance += 6;
-                        }
+                        projectile.damage -= 1;
                         break;
                     }
                 case ProjectileID.AmberBolt:
@@ -658,10 +688,7 @@ namespace PacnyRefresh.Items.Gem
             Projectile.timeLeft = 24;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            //Projectile.extraUpdates = 1;
-
-            //Projectile.GetGlobalProjectile<GoldLeafProjectile>().throwingDamageType = DamageClass.Melee;
-            Projectile.DamageType = DamageClass.Melee;
+            Projectile.DamageType = DamageClass.Magic;
         }
 
         public override void OnSpawn(IEntitySource source)
@@ -762,10 +789,9 @@ namespace PacnyRefresh.Items.Gem
             Projectile.friendly = true;
             Projectile.extraUpdates = 1;
 
-            Projectile.DamageType = DamageClass.Melee;
+            Projectile.timeLeft = TimeToTicks(10);
 
-            Projectile.GetGlobalProjectile<PacnyProjectile>().gravity = 0.08f;
-            Projectile.GetGlobalProjectile<PacnyProjectile>().gravityDelay = 20;
+            Projectile.DamageType = DamageClass.Melee;
         }
 
         public override void ModifyDamageHitbox(ref Rectangle hitbox)
@@ -777,8 +803,21 @@ namespace PacnyRefresh.Items.Gem
         {
             SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);
 
-            for (float k = 0; k < 6.28f; k += 0.52f)
-                Dust.NewDustPerfect(Projectile.Center, DustType<LightDust>(), Vector2.One.RotatedBy(k) * 0.45f, 0, GemColor(4), 0.35f);
+            int dusts = Main.rand.Next(4, 7);
+            for (int k = 0; k < dusts; k++)
+            {
+                Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.GemEmerald, Scale: Main.rand.NextFloat(0.35f, 0.75f));
+                dust.velocity *= 0.5f;
+                dust.velocity += Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(0.5f, 1.25f);
+                dust.noGravity = true;
+                dust.fadeIn = 1.2f;
+            }
+        }
+
+        public override void AI()
+        {
+            if (Projectile.Counter() > 20)
+                Projectile.velocity.Y += 0.08f;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -789,7 +828,7 @@ namespace PacnyRefresh.Items.Gem
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
                 Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin/* + new Vector2(0f, Projectile.gfxOffY)*/;
-                Main.spriteBatch.Draw(tex, drawPos, null, ColorHelper.AdditiveWhite * (1.0f - 0.15f * k), Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(tex, drawPos, null, Color.White with { A = (byte)(60 + (20 * k)) } * (1.0f - 0.15f * k), Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
             }
             return true;
         }
@@ -809,7 +848,7 @@ namespace PacnyRefresh.Items.Gem
             Projectile.CloneDefaults(ProjectileID.RubyBolt);
             //AIType = ProjectileID.RubyBolt;
 
-            Projectile.DamageType = DamageClass.Melee;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.penetrate = 1;
             Projectile.extraUpdates = 1;
         }

@@ -119,6 +119,8 @@ namespace PacnyRefresh.Core //most of this is snatched from starlight river and 
                 && Player.ZoneOverworldHeight;
         }
 
+        public static float Counter(this Projectile projectile) => projectile.GetGlobalProjectile<PacnyProjectile>().counter;
+
         public static string TicksToTime(int ticks)
         {
             int sec = ticks / 60;
@@ -753,7 +755,8 @@ namespace PacnyRefresh.Core //most of this is snatched from starlight river and 
 
     public static class ColorHelper
     {
-        public static Color AdditiveWhite => new(255, 255, 255) { A = 0 };
+        public static Color AdditiveWhite(byte alpha = 0) => new(255, 255, 255) { A = alpha };
+        public static Color AdditiveWhite() => new(255, 255, 255) { A = 0 };
 
         public static Color GemColor(int gem)
         {

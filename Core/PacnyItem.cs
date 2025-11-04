@@ -90,7 +90,7 @@ namespace PacnyRefresh.Core
             {
                 Texture2D tex = TextureAssets.Item[item.type].Value;
                 spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, position, frame, ColorHelper.AdditiveWhite * 0.3f, 0, origin, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, position, frame, ColorHelper.AdditiveWhite() * 0.3f, 0, origin, scale, SpriteEffects.None, 0f);
                 return false;
             }
             return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
@@ -102,7 +102,7 @@ namespace PacnyRefresh.Core
             {
                 Texture2D tex = TextureAssets.Item[item.type].Value;
                 spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, lightColor, rotation + ((float)Math.Sin(Main.item[whoAmI].GetGlobalItem<PacnyItem>().rottime * 3f) * (materialMult * 0.25f)), tex.Size()/2, scale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, ColorHelper.AdditiveWhite * 0.3f, rotation + ((float)Math.Sin(Main.item[whoAmI].GetGlobalItem<PacnyItem>().rottime * 3f) * (materialMult * 0.25f)), tex.Size() / 2, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, ColorHelper.AdditiveWhite() * 0.3f, rotation + ((float)Math.Sin(Main.item[whoAmI].GetGlobalItem<PacnyItem>().rottime * 3f) * (materialMult * 0.25f)), tex.Size() / 2, scale, SpriteEffects.None, 0f);
                 return false;
             }
             return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
