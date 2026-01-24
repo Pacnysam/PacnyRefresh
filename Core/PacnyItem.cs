@@ -52,7 +52,13 @@ namespace PacnyRefresh.Core
         public override void SetDefaults(Item item)
         {
             switch (item.type)
-            { 
+            {
+                case ItemID.JungleSpores:
+                    {
+                        item.width = 22;
+                        item.height = 16;
+                        break;
+                    }
                 case ItemID.CursedFlame:
                     {
                         item.width = 16;
@@ -70,18 +76,51 @@ namespace PacnyRefresh.Core
 
         public override void PostUpdate(Item item)
         {
-            if (item.timeSinceItemSpawned % 180 == 120)
+            if (item.timeSinceItemSpawned % 180 == 160)
             {
                 materialMult = 1f;
             }
-
-            if (materialMult > 0)
-                materialMult -= 0.01f;
-            if (materialMult < 0)
-                materialMult = 0;
+            else 
+            {
+                if (materialMult > 0)
+                    materialMult -= 0.01f;
+            }
+            materialMult = Math.Clamp(materialMult, 0f, 1f);
 
             rottime += (float)Math.PI / 60;
             if (rottime >= Math.PI * 2) rottime = 0;
+
+            if (!Main.dedServ)
+            {
+                switch (item.type)
+                {
+                    case ItemID.CursedFlame:
+                        {
+                            if (Main.rand.NextBool((int)(materialMult * 15), 100))
+                            {
+                                Dust dust = Dust.NewDustDirect(item.position, item.width, item.height, DustID.FireworkFountain_Green, 0, 0, 0, default, Main.rand.NextFloat(0.45f, 0.65f));
+                                dust.position += dust.velocity * 0.85f;
+                                dust.velocity *= 0.85f;
+                                dust.noGravity = true;
+                            }
+                            break;
+                        }
+                    case ItemID.Ichor:
+                        {
+                            if (Main.rand.NextBool((int)(materialMult * 20), 100))
+                            {
+                                Dust dust = Dust.NewDustDirect(item.Left, item.width, item.height / 2, DustID.Ichor, 0, Main.rand.NextFloat(-3f, -1.5f), 160, default, Main.rand.NextFloat(0.55f, 0.7f));
+                                dust.position += dust.velocity * 1.15f;
+                                dust.velocity *= 0.35f;
+                                dust.fadeIn = 1.25f * materialMult;
+                                dust.noGravity = true;
+                                dust.noLight = true;
+                                dust.noLightEmittence = true;
+                            }
+                            break;
+                        }
+                }
+            }
         }
 
         public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
@@ -100,9 +139,13 @@ namespace PacnyRefresh.Core
         {
             if (item.type == ItemID.CursedFlame || item.type == ItemID.Ichor)
             {
+                float rottime = Main.item[whoAmI].GetGlobalItem<PacnyItem>().rottime * 1.75f;
+                float multiplier = Main.item[whoAmI].GetGlobalItem<PacnyItem>().materialMult * 0.5f;
+                Vector2 squash = new((float)Math.Sin(rottime) * multiplier, (float)Math.Cos(rottime) * multiplier);
+
                 Texture2D tex = TextureAssets.Item[item.type].Value;
-                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, lightColor, rotation + ((float)Math.Sin(Main.item[whoAmI].GetGlobalItem<PacnyItem>().rottime * 3f) * (materialMult * 0.25f)), tex.Size()/2, scale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, ColorHelper.AdditiveWhite() * 0.3f, rotation + ((float)Math.Sin(Main.item[whoAmI].GetGlobalItem<PacnyItem>().rottime * 3f) * (materialMult * 0.25f)), tex.Size() / 2, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, lightColor, rotation, tex.Size()/2, scale * (Vector2.One + squash), SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, ColorHelper.AdditiveWhite() * 0.3f, rotation, tex.Size() / 2, scale * (Vector2.One + squash), SpriteEffects.None, 0f);
                 return false;
             }
             return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);

@@ -19,7 +19,7 @@ namespace PacnyRefresh.Core
             .Description("Bool automatically draws an in world glowmask")
             .RegisterCustomSet<(Asset<Texture2D>, Color, bool)>((null, Color.White, false));
     }
-    public static class ProjectileSets
+    public static partial class ProjectileSets
     {
         public static bool[] summonSpeedImmune = ProjectileID.Sets.Factory.CreateNamedSet("SummonSpeedImmune")
             .RegisterBoolSet(false, ProjectileID.Spazmamini, ProjectileID.DeadlySphere);
@@ -27,6 +27,17 @@ namespace PacnyRefresh.Core
     public static class BuffSets
     {
         public static bool[] Cooldown = BuffID.Sets.Factory.CreateNamedSet("Cooldown")
-            .RegisterBoolSet(false, BuffID.PotionSickness, BuffID.ManaSickness, BuffID.ChaosState);
+            .RegisterBoolSet(false, BuffID.PotionSickness, BuffID.ManaSickness, BuffID.ChaosState, BuffID.BrainOfConfusionBuff);
+
+        public static bool[] Cosmetic = BuffID.Sets.Factory.CreateNamedSet("Cosmetic")
+            .RegisterBoolSet(false, BuffID.Slimed, BuffID.GelBalloonBuff, BuffID.Lovestruck, BuffID.Stinky, BuffID.Wet);
+
+        public static bool[] NoCleanseTooltip = BuffID.Sets.Factory.CreateNamedSet("NoCleanseTooltip")
+            .Description("Does not display tooltip for being cleansable")
+            .RegisterBoolSet(false, BuffID.StarInBottle);
+
+        public static bool[] IsRemovable = BuffID.Sets.Factory.CreateNamedSet("IsRemovable")
+            .Description("Can be removed by safety blanket and similar methods")
+            .RegisterBoolSet(true, BuffID.MoonLeech, BuffID.TheTongue, BuffID.Obstructed, BuffID.Horrified, BuffID.Hunger, BuffID.NeutralHunger, BuffID.Starving, BuffID.StarInBottle);
     }
 }

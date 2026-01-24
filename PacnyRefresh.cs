@@ -8,13 +8,14 @@ using Terraria.ModLoader;
 
 namespace PacnyRefresh
 {
-	// Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
 	public class PacnyRefresh : Mod
-	{
-        //public override string Name => "Pacny`s Refresh";
+    {
+        public static PacnyRefresh Instance;
+
         PacnyRefresh() 
 		{
             MusicSkipsVolumeRemap = true;
+            Instance = this;
         }
 	}
 }

@@ -26,12 +26,14 @@ namespace PacnyRefresh.Core
 
         public override void PostSetupContent()
         {
-            TextureAssets.Item[ItemID.CursedFlame] = Request<Texture2D>("PacnyRefresh/Items/Corruption/CursedFlame");
-            TextureAssets.Item[ItemID.Ichor] = Request<Texture2D>("PacnyRefresh/Items/Crimson/Ichor");
+            TextureAssets.Item[ItemID.JungleSpores] = Request<Texture2D>("PacnyRefresh/Content/Jungle/Items/JungleSpores");
+            TextureAssets.Item[ItemID.CursedFlame] = Request<Texture2D>("PacnyRefresh/Content/Corruption/Items/CursedFlame");
+            TextureAssets.Item[ItemID.Ichor] = Request<Texture2D>("PacnyRefresh/Content/Crimson/Items/Ichor");
         }
 
         public override void Unload()
         {
+            TextureAssets.Item[ItemID.JungleSpores] = Request<Texture2D>($"Terraria/Images/Item_{ItemID.JungleSpores}");
             TextureAssets.Item[ItemID.CursedFlame] = Request<Texture2D>($"Terraria/Images/Item_{ItemID.CursedFlame}");
             TextureAssets.Item[ItemID.Ichor] = Request<Texture2D>($"Terraria/Images/Item_{ItemID.Ichor}");
         }
