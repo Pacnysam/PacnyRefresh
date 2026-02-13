@@ -2,3 +2,8 @@ AmberStun: {
 	DisplayName: Amber Stun
 	Description: No moving!
 }
+
+RestorationBuff: {
+	DisplayName: Restoration Buff
+	Description: Rapidly recovering health
+}

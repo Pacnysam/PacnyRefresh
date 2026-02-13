@@ -137,6 +137,8 @@ namespace PacnyRefresh.Core
             bool vitalbuff = (BuffSets.Cooldown[bufftype] || !BuffSets.IsRemovable[bufftype] || BuffSets.Cosmetic[bufftype]);
             return time > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
         }
+
+        public static string CoolBuffTex(string input) => (Main.AssetSourceController.ActiveResourcePackList.EnabledPacks.Select(x => x.Name).Contains("Cool Buffs") ? input + "Cool" : input);
     }
 
     public static class DustHelper
