@@ -91,7 +91,7 @@ namespace PacnyRefresh.Content.Potions
                     item.healLife = RestoreAmount;
                     break;
                 }
-            }
+        }
         public override bool CanUseItem(Item item, Player player)
         {
             return item.type switch
@@ -116,12 +116,19 @@ namespace PacnyRefresh.Content.Potions
         }
         public override void AddRecipes()
         {
-            Recipe lesserRestore = Recipe.Create(ItemID.LesserRestorationPotion, 2)
-                .AddIngredient(ItemID.LesserHealingPotion, 2)
+            Recipe.Create(ItemID.LesserRestorationPotion, 2)
+                .AddIngredient(ItemID.VileMushroom, 1)
                 .AddIngredient(ItemID.PinkGel, 1)
+                .AddIngredient(ItemID.Bottle, 2)
                 .AddTile(TileID.Bottles)
                 .Register();
-            Recipe normalRestore = Recipe.Create(ItemID.RestorationPotion, 2)
+            Recipe.Create(ItemID.LesserRestorationPotion, 2)
+                .AddIngredient(ItemID.ViciousMushroom, 1)
+                .AddIngredient(ItemID.PinkGel, 1)
+                .AddIngredient(ItemID.Bottle, 2)
+                .AddTile(TileID.Bottles)
+                .Register();
+            Recipe.Create(ItemID.RestorationPotion, 2)
                 .AddIngredient(ItemID.LesserRestorationPotion, 2)
                 .AddIngredient(ItemID.PixieDust, 1)
                 .AddTile(TileID.Bottles)

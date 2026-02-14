@@ -4,6 +4,6 @@ AmberStun: {
 }
 
 RestorationBuff: {
-	DisplayName: Restoration Buff
+	DisplayName: Restoration
 	Description: Rapidly recovering health
 }
