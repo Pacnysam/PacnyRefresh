@@ -1,0 +1,13 @@
+VisualConfig: {
+	DisplayName: Visual Config
+
+	ShakeIntensity: {
+		Label: Screenshake
+		Tooltip: Modifies screenshake intensity.
+	}
+
+	CoolBuffs: {
+		Label: Cool Buffs Support
+		Tooltip: Changes buff textures to support the Cool Buffs resource pack.
+	}
+}

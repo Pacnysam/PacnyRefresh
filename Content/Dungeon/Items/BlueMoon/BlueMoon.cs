@@ -189,8 +189,8 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
                 if (!Main.dedServ)
                 {
                     //Helper.AddScreenshake(Main.LocalPlayer, 18, Projectile.Center);
-                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity.SafeNormalize(Vector2.One), 25f * GetInstance<GraphicsConfig>().ShakeIntensity, 6.5f, 30, 1500));
-                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, new Vector2(Projectile.velocity.Y, Projectile.velocity.X).SafeNormalize(Vector2.One), 13.5f * GetInstance<GraphicsConfig>().ShakeIntensity, 12, 25, 1500));
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity.SafeNormalize(Vector2.One), 25f * GetInstance<VisualConfig>().ShakeIntensity, 6.5f, 30, 1500));
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, new Vector2(Projectile.velocity.Y, Projectile.velocity.X).SafeNormalize(Vector2.One), 13.5f * GetInstance<VisualConfig>().ShakeIntensity, 12, 25, 1500));
 
                     SoundEngine.PlaySound(new SoundStyle("PacnyRefresh/Assets/Sounds/HeavyThump") { Volume = 0.5f, PitchVariance = 0.5f }, Projectile.position);
                     SoundEngine.PlaySound(new SoundStyle("PacnyRefresh/Assets/Sounds/JellyfishMiniDeath") { Volume = 1.65f, Pitch = - 0.3f, PitchVariance = 0.6f }, Projectile.position);

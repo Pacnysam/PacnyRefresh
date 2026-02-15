@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using static PacnyRefresh.Core.Helper;
 
 namespace PacnyRefresh.Content.Potions
 {
@@ -138,7 +139,7 @@ namespace PacnyRefresh.Content.Potions
 
     public class RestorationBuff : ModBuff
     {
-        public override string Texture => Helper.CoolBuffTex(base.Texture);
+        public override string Texture => CoolBuffTex(base.Texture);
         public override void Update(Player player, ref int buffIndex)
         {
             if (player.buffTime[buffIndex] % 30 == 0)

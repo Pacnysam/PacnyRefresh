@@ -138,7 +138,7 @@ namespace PacnyRefresh.Core
             return time > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
         }
 
-        public static string CoolBuffTex(string input) => (Main.AssetSourceController.ActiveResourcePackList.EnabledPacks.Select(x => x.Name).Contains("Cool Buffs") ? input + "Cool" : input);
+        public static string CoolBuffTex(string input) => GetInstance<VisualConfig>().CoolBuffs ? input + "Cool" : input;
     }
 
     public static class DustHelper

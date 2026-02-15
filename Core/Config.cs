@@ -12,12 +12,14 @@ namespace PacnyRefresh.Core
         public override ConfigScope Mode => ConfigScope.ServerSide;
     }*/
 
-    public class GraphicsConfig : ModConfig
+    public class VisualConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
-        [Label("Screenshake")]
-        [Tooltip("Screenshake Intensity")]
+        [ReloadRequired]
+        [DefaultValue(false)]
+        public bool CoolBuffs = false;
+
         [Range(0f, 1f)]
         [Slider]
         [DefaultValue(1f)]

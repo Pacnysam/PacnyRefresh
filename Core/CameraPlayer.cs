@@ -29,9 +29,9 @@ namespace PacnyRefresh.Core
             PunchCameraModifier modifier;
 
             if (direction.HasValue)
-                modifier = new(position, direction.Value, amount * GetInstance<GraphicsConfig>().ShakeIntensity, speed, frames, distance, uniqueIdentity);
+                modifier = new(position, direction.Value, amount * GetInstance<VisualConfig>().ShakeIntensity, speed, frames, distance, uniqueIdentity);
             else
-                modifier = new(position, (-MathHelper.PiOver2).ToRotationVector2(), amount * GetInstance<GraphicsConfig>().ShakeIntensity, speed, frames, distance, uniqueIdentity);
+                modifier = new(position, (-MathHelper.PiOver2).ToRotationVector2(), amount * GetInstance<VisualConfig>().ShakeIntensity, speed, frames, distance, uniqueIdentity);
 
             Main.instance.CameraModifiers.Add(modifier);
         }
@@ -59,13 +59,13 @@ namespace PacnyRefresh.Core
                     amount -= mult / 70f;
                 }*/
             }
-            multiplier = MathHelper.Clamp(multiplier * GetInstance<GraphicsConfig>().ShakeIntensity, 0f, 1f);
+            multiplier = MathHelper.Clamp(multiplier * GetInstance<VisualConfig>().ShakeIntensity, 0f, 1f);
 
             player.GetModPlayer<CameraPlayer>().ScreenShake += (int)Math.Clamp(amount * multiplier, 0, 150);
         }
         public static void AddScreenshake(Player player, int amount)
         {
-            player.GetModPlayer<CameraPlayer>().ScreenShake += (int)Math.Clamp(amount * GetInstance<GraphicsConfig>().ShakeIntensity, 0, 150);
+            player.GetModPlayer<CameraPlayer>().ScreenShake += (int)Math.Clamp(amount * GetInstance<VisualConfig>().ShakeIntensity, 0, 150);
         }
 
         public override void ModifyScreenPosition()

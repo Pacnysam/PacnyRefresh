@@ -1,14 +1,3 @@
-Configs: {
-	GraphicsConfig: {
-		DisplayName: Graphics Config
-
-		ShakeIntensity: {
-			Label: Screenshake
-			Tooltip: Screenshake Intensity
-		}
-	}
-}
-
 Mechanics: {
 	CritMult: "{0}x critical strike multiplier"
 	LearnRecipe: Learned Recipe: {0}
