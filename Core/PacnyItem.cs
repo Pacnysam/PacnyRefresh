@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using PacnyRefresh.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ID;
 using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace PacnyRefresh.Core
 {
@@ -129,7 +130,7 @@ namespace PacnyRefresh.Core
             {
                 Texture2D tex = TextureAssets.Item[item.type].Value;
                 spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, position, frame, ColorHelper.AdditiveWhite() * 0.3f, 0, origin, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, position, frame, Color.White.Alpha() * 0.3f, 0, origin, scale, SpriteEffects.None, 0f);
                 return false;
             }
             return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
@@ -145,7 +146,7 @@ namespace PacnyRefresh.Core
 
                 Texture2D tex = TextureAssets.Item[item.type].Value;
                 spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, lightColor, rotation, tex.Size()/2, scale * (Vector2.One + squash), SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, ColorHelper.AdditiveWhite() * 0.3f, rotation, tex.Size() / 2, scale * (Vector2.One + squash), SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, Color.White.Alpha() * 0.3f, rotation, tex.Size() / 2, scale * (Vector2.One + squash), SpriteEffects.None, 0f);
                 return false;
             }
             return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);

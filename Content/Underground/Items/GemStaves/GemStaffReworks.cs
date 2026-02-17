@@ -21,7 +21,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static PacnyRefresh.Core.ColorHelper;
+using static PacnyRefresh.Core.Helpers.ColorHelper;
 using static PacnyRefresh.Core.Helper;
 using static Terraria.ModLoader.ModContent;
 

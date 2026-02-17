@@ -25,6 +25,7 @@ namespace PacnyRefresh.Core
 {
     public class PacnyPlayer : ModPlayer
     {
+        public int craftTimer = 0;
         public float itemSpeed;
 
         public float meleeCritDamageMult = 1f;
@@ -63,6 +64,11 @@ namespace PacnyRefresh.Core
 
             modifiers.CritDamage += (proj.GetGlobalProjectile<PacnyProjectile>().critDamageMod);
             modifiers.CritDamage *= critDamageMult;
+        }
+
+        public override void PostUpdate()
+        {
+            if (craftTimer > 0) craftTimer--; 
         }
 
         public delegate void DoubleTapDelegate(Player player);

@@ -118,13 +118,7 @@ namespace PacnyRefresh.Content.Potions
         public override void AddRecipes()
         {
             Recipe.Create(ItemID.LesserRestorationPotion, 2)
-                .AddIngredient(ItemID.VileMushroom, 1)
-                .AddIngredient(ItemID.PinkGel, 1)
-                .AddIngredient(ItemID.Bottle, 2)
-                .AddTile(TileID.Bottles)
-                .Register();
-            Recipe.Create(ItemID.LesserRestorationPotion, 2)
-                .AddIngredient(ItemID.ViciousMushroom, 1)
+                .AddRecipeGroup("PacnyRefresh:EvilMushroom")
                 .AddIngredient(ItemID.PinkGel, 1)
                 .AddIngredient(ItemID.Bottle, 2)
                 .AddTile(TileID.Bottles)
@@ -132,6 +126,7 @@ namespace PacnyRefresh.Content.Potions
             Recipe.Create(ItemID.RestorationPotion, 2)
                 .AddIngredient(ItemID.LesserRestorationPotion, 2)
                 .AddIngredient(ItemID.PixieDust, 1)
+                .AddIngredient(ItemID.CrystalShard, 1)
                 .AddTile(TileID.Bottles)
                 .Register();
         }

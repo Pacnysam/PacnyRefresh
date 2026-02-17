@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using static PacnyRefresh.Core.Helper;
 using Terraria.DataStructures;
 using Terraria.Localization;
+using PacnyRefresh.Core.Helpers;
 
 namespace PacnyRefresh.Core.Mechanics
 {

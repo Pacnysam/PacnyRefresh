@@ -1,26 +1,27 @@
-﻿using System;
-using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.Audio;
-using Terraria.GameContent;
-using Terraria.GameContent.Drawing;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Localization;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Threading;
-using System.IO;
-using Terraria.ModLoader.IO;
-using System.Linq;
 using PacnyRefresh.Core;
 using PacnyRefresh.Core.Bases.Projectiles;
+using PacnyRefresh.Core.Helpers;
 using ReLogic.Content;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+using static Terraria.ModLoader.ModContent;
 
 namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
 {
@@ -136,7 +137,7 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
 
                 for (float k = 0; k < 6.28f; k += 6.28f / 40)
                 {
-                    Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, ColorHelper.AdditiveWhite(), 2.5f);
+                    Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, Color.White.Alpha(), 2.5f);
                     dust.noGravity = true;
                 }
             }
@@ -262,8 +263,8 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
 
             Vector2 drawOrigin = new(texture.Width * 0.5f, Projectile.height * 0.5f);
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite() * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.EntitySpriteDraw(Request<Texture2D>("PacnyRefresh/Content/Dungeon/Items/BlueMoon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), ColorHelper.AdditiveWhite() * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), Color.White.Alpha() * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.EntitySpriteDraw(Request<Texture2D>("PacnyRefresh/Content/Dungeon/Items/BlueMoon/WaterBurstGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame)), Color.White.Alpha() * 0.3f, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
     }
