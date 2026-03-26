@@ -151,7 +151,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         item.damage = 13;
                         item.crit = 4;
 
-                        item.mana = 4;
+                        item.mana = 3;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
@@ -165,7 +165,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
 
-                        item.mana = 4;
+                        item.mana = 3;
 
                         item.UseSound = SoundID.DD2_EtherianPortalSpawnEnemy with { Pitch = 0.8f, PitchVariance = 0.3f };
                         break;
@@ -191,8 +191,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
 
                         item.damage = 16;
                         item.shootSpeed = 14.5f;
-                        item.useTime = 42;
-                        item.useAnimation = 42;
+                        item.useTime = item.useAnimation = 42;
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.25f;
 
@@ -225,7 +224,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         item.width = 36;
                         item.height = 36;
 
-                        item.damage = 10;
+                        item.damage = 11;
                         item.ArmorPenetration = 10;
                         item.useTime = 15;
                         item.useAnimation = 15;
@@ -425,6 +424,8 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                     }
                 case ProjectileID.TopazBolt:
                     {
+                        entity.ai[0] = 5;
+                        entity.timeLeft = TimeToTicks(min: 1);
                         break;
                     }
                 case ProjectileID.SapphireBolt:
@@ -460,7 +461,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
             }
         }
 
-        public override bool PreAI(Projectile projectile)
+        public override void PostAI(Projectile projectile)
         {
             rottime += (float)Math.PI / 60;
             if (rottime >= Math.PI * 2) rottime = 0;
@@ -492,7 +493,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                     {
                         projectile.velocity.Y += 0.35f;
 
-                        if (projectile.timeLeft % 5 == 0 && projectile.Counter() < TimeToTicks(1) + 20 && projectile.Counter() > 10)
+                        if (projectile.timeLeft % 5 == 0 && projectile.Counter() < TimeToTicks(1.5f) && projectile.Counter() > 5)
                         {
                             Projectile emerald = Projectile.NewProjectileDirect(projectile.GetSource_FromAI(), new Vector2(projectile.Bottom.X, projectile.Bottom.Y + Main.rand.NextFloat(-4, 4)), Vector2.Zero, ProjectileType<FallingEmerald>(), (int)(projectile.damage * 0.55f), projectile.knockBack * 0.3f, projectile.owner);
                             emerald.DamageType = DamageClass.Magic;
@@ -508,7 +509,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                             projectile.extraUpdates = 1;
                         }
 
-                        if (projectile.GetGlobalProjectile<PacnyProjectile>().counter % 8 == 0)
+                        if (projectile.Counter() % 8 == 0)
                         {
                             for (float k = 0; k < Math.PI * 2; k += (float)Math.PI / 30)
                             {
@@ -536,7 +537,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                             dust.noLight = true;
                         }
                         Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.15f);
-                        return false;
+                        break;
                     }
                 case ProjectileID.AmberBolt:
                     {
@@ -571,7 +572,6 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         break;
                     }
             }
-            return base.PreAI(projectile);
         }
 
         public override void OnKill(Projectile projectile, int timeLeft)
@@ -621,7 +621,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         {
                             projectile.velocity.Y = -oldVelocity.Y;
                         }
-                        return false;
+                        return projectile.ai[0]-- <= 0;
                     }
                 case ProjectileID.RubyBolt:
                     {
@@ -696,6 +696,14 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         break;
                     }
             }
+        }
+
+        public override bool PreDraw(Projectile projectile, ref Color lightColor)
+        {
+            if (projectile.type == ProjectileID.DiamondBolt)
+                return false;
+
+            return base.PreDraw(projectile, ref lightColor);
         }
     }
 

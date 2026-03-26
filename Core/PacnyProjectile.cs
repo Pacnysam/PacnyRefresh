@@ -30,11 +30,14 @@ namespace PacnyRefresh.Core
         public int spawnTime = 0;
         public int counter = 0;
 
+        public override void PostAI(Projectile projectile)
+        {
+            counter++;
+        }
         public override void AI(Projectile projectile)
         {
             spawnTime--;
             gravityDelay--;
-            counter++;
             
             if ((projectile.type == ProjectileID.FallingStar) && counter % 15 == 0)
             {

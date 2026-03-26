@@ -2,3 +2,10 @@ Mechanics: {
 	CritMult: "{0}x critical strike multiplier"
 	LearnRecipe: Learned Recipe: {0}
 }
+
+Items: {
+	GreaterRestorationPotion: {
+		DisplayName: Greater Restoration Potion
+		Tooltip: ""
+	}
+}

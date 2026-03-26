@@ -35,6 +35,7 @@ namespace PacnyRefresh.Content.Potions
     {
         const int LesserRestoreAmount = 75;
         const int RestoreAmount = 150;
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.LesserRestorationPotion || entity.type == ItemID.RestorationPotion;
 
         public override void Load() => On_Item.SetDefaults1 += LesserRestorationUnremover;
         public override void Unload() => On_Item.SetDefaults1 -= LesserRestorationUnremover;
@@ -54,7 +55,7 @@ namespace PacnyRefresh.Content.Potions
                 self.width = 14;
                 self.height = 24;
                 self.potion = true;
-                self.value = 1500;
+                self.value = Item.sellPrice(silver: 1, copper: 50);
                 self.rare = ItemRarityID.Blue;
             }
             else
@@ -73,7 +74,7 @@ namespace PacnyRefresh.Content.Potions
                     line.Hide();
             }
         }
-        public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.LesserRestorationPotion || entity.type == ItemID.RestorationPotion;
+        
         public override void SetDefaults(Item entity)
         {
             base.SetDefaults(entity);
@@ -111,22 +112,22 @@ namespace PacnyRefresh.Content.Potions
                     item.healLife = 0;
                     player.AddBuff(BuffID.PotionSickness, (int)player.PotionDelayModifier.ApplyTo(Helper.TimeToTicks(60)));
                     player.AddBuff(BuffType<RestorationBuff>(), Helper.TimeToTicks(heal/10f));
-                    break;
+                    return true;
             }
             return base.UseItem(item, player);
         }
         public override void AddRecipes()
         {
             Recipe.Create(ItemID.LesserRestorationPotion, 2)
-                .AddRecipeGroup("PacnyRefresh:EvilMushroom")
+                .AddIngredient(ItemID.Mushroom, 1)
                 .AddIngredient(ItemID.PinkGel, 1)
                 .AddIngredient(ItemID.Bottle, 2)
                 .AddTile(TileID.Bottles)
                 .Register();
             Recipe.Create(ItemID.RestorationPotion, 2)
                 .AddIngredient(ItemID.LesserRestorationPotion, 2)
-                .AddIngredient(ItemID.PixieDust, 1)
-                .AddIngredient(ItemID.CrystalShard, 1)
+                .AddIngredient(ItemID.GlowingMushroom, 1)
+                .AddRecipeGroup("PacnyRefresh:EvilMushroom")
                 .AddTile(TileID.Bottles)
                 .Register();
         }

@@ -74,7 +74,7 @@ namespace PacnyRefresh.Core
                 && Player.ZoneOverworldHeight;
         }
 
-        public static int TimeToTicks(float hours, float min, float sec) => (int)((hours * 216000) + (min * 3600) + (sec * 60));
+        public static int TimeToTicks(float hours = 0, float min = 0, float sec = 0) => (int)((hours * 216000) + (min * 3600) + (sec * 60));
         public static int TimeToTicks(float min, float sec) => (int)((min * 3600) + (sec * 60));
         public static int TimeToTicks(float sec) => (int)(sec * 60);
 
