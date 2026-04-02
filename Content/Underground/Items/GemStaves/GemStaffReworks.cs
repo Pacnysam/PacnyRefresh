@@ -161,7 +161,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         item.width = 32;
                         item.height = 32;
 
-                        item.damage = 14;
+                        item.damage = 13;
 
                         item.GetGlobalItem<PacnyItem>().critDamageMod = 0.5f;
 
@@ -403,10 +403,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
 
         public float rottime = 0;
 
-        public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
-        {
-            return gemBolts.Contains(entity.type);
-        }
+        public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => gemBolts.Contains(entity.type);
 
         public override void SetStaticDefaults()
         {
@@ -424,8 +421,8 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                     }
                 case ProjectileID.TopazBolt:
                     {
-                        entity.ai[0] = 5;
-                        entity.timeLeft = TimeToTicks(min: 1);
+                        entity.penetrate = 8;
+                        entity.timeLeft = TimeToTicks(sec: 20);
                         break;
                     }
                 case ProjectileID.SapphireBolt:
@@ -621,7 +618,7 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         {
                             projectile.velocity.Y = -oldVelocity.Y;
                         }
-                        return projectile.ai[0]-- <= 0;
+                        return projectile.penetrate -- <= 0;
                     }
                 case ProjectileID.RubyBolt:
                     {
@@ -649,6 +646,14 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
                         ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.NightsEdge,
                                 new ParticleOrchestraSettings { PositionInWorld = projectile.Center },
                                 projectile.owner);
+                        break;
+                    }
+                case ProjectileID.TopazBolt:
+                    {
+                        ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.Excalibur,
+                                new ParticleOrchestraSettings { PositionInWorld = projectile.Center },
+                                projectile.owner);
+                        projectile.Kill();
                         break;
                     }
                 case ProjectileID.SapphireBolt:

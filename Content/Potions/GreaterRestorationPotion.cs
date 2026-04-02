@@ -20,7 +20,7 @@ namespace PacnyRefresh.Content.Potions
     public class GreaterRestorationPotion : ModItem
     {
         const int GreaterRestoreAmount = 225;
-
+        public override bool IsLoadingEnabled(Mod mod) => false;
         public override void SetStaticDefaults() 
         { 
             Item.ResearchUnlockCount = 30;
