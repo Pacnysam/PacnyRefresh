@@ -66,7 +66,7 @@ namespace PacnyRefresh.Content.Potions
             base.ModifyTooltips(item, tooltips);
             
             foreach (TooltipLine line in tooltips.Where(x => x.Mod == "Terraria" && x.Name == "HealLife"))
-                line.Text = Language.GetTextValue("Mods.PacnyRefresh.VanillaItemTooltips.RestorationPotion", item.healLife);
+                line.Text = Language.GetTextValue("Mods.PacnyRefresh.VanillaItemTooltips.RestorationPotion", Main.LocalPlayer.GetHealLife(item) - (Main.LocalPlayer.GetHealLife(item) % 5));
 
             if (item.type == ItemID.RestorationPotion)
             {
@@ -108,8 +108,9 @@ namespace PacnyRefresh.Content.Potions
             {
                 case ItemID.LesserRestorationPotion:
                 case ItemID.RestorationPotion:
-                    int heal = item.healLife;
+                    int heal = player.GetHealLife(item) - (player.GetHealLife(item) % 5);
                     item.healLife = 0;
+
                     player.AddBuff(BuffID.PotionSickness, (int)player.PotionDelayModifier.ApplyTo(Helper.TimeToTicks(60)));
                     player.AddBuff(BuffType<RestorationBuff>(), Helper.TimeToTicks(heal/10f));
                     return true;

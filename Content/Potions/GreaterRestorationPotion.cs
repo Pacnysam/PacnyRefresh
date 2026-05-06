@@ -51,15 +51,16 @@ namespace PacnyRefresh.Content.Potions
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             foreach (TooltipLine line in tooltips.Where(x => x.Mod == "Terraria" && x.Name == "HealLife"))
-                line.Text = Language.GetTextValue("Mods.PacnyRefresh.VanillaItemTooltips.RestorationPotion", Item.healLife);
+                line.Text = Language.GetTextValue("Mods.PacnyRefresh.VanillaItemTooltips.RestorationPotion", Main.LocalPlayer.GetHealLife(Item) - (Main.LocalPlayer.GetHealLife(Item) % 5));
         }
 
         public override void UpdateInventory(Player player) => Item.healLife = GreaterRestoreAmount;
         public override bool CanUseItem(Player player) => player.FindBuffIndex(BuffID.PotionSickness) == -1;
         public override bool? UseItem(Player player)
         {
-            int heal = Item.healLife;
+            int heal = player.GetHealLife(Item) - (player.GetHealLife(Item) % 5);
             Item.healLife = 0;
+
             player.AddBuff(BuffID.PotionSickness, (int)player.PotionDelayModifier.ApplyTo(Helper.TimeToTicks(60)));
             player.AddBuff(BuffType<RestorationBuff>(), Helper.TimeToTicks(heal / 10f));
             return true;
