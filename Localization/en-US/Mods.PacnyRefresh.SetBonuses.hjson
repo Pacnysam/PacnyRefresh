@@ -1,0 +1,11 @@
+Molten:
+	'''
+	Damaging nearby enemies builds up heat
+	Double tap {0} to expel heat as a defense crippling explosion
+	'''
+Meteor:
+	'''
+	Minions will target enemies struck by magic weapons
+	Summons a claw turret to shoot enemies at the cost of mana
+	Double tap {0} to disable the turret
+	'''

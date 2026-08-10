@@ -86,7 +86,7 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
 
         ref float Charge => ref Projectile.ai[1];
         int timesSlammed = 0;
-        const int CHARGETIME = 75;
+        const int CHARGETIME = 150;
 
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -101,11 +101,13 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
         public override void SetDefaults() 
         {
             Projectile.CloneDefaults(ProjectileID.BlueMoon);
-            Projectile.width = 38; Projectile.height = 38;
+            Projectile.width = Projectile.height = 24;
             Projectile.aiStyle = 0;
             Projectile.scale = 1f;
         }
-        
+
+        public override void ModifyDamageHitbox(ref Rectangle hitbox) => hitbox.Inflate(6, 6);
+
         public override void RealAI()
         {
             Projectile.rotation = Projectile.AngleFrom(Main.player[Projectile.owner].MountedCenter) + 1.57f;
@@ -123,22 +125,25 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
         {
             Charge++;
 
-            if (Charge > 100) Charge = 100;
+            int maxCharge = (int)(CHARGETIME * 1.25f);
+            if (Charge > maxCharge) Charge = maxCharge;
 
-            throwRange = Math.Clamp(Charge * 4, 180, 360);
-            swingDistance = 10 + (int)(Charge / 2);
-            swingSpeed = 2.5f + Charge / 20;
+            throwRange = Math.Clamp(Charge * 2.5f, 180, 360);
+            swingDistance = 10 + (int)(Charge / 3.5f);
+            swingSpeed = 2.5f + (Charge / 40);
 
             if (Charge == CHARGETIME && Main.myPlayer == Projectile.owner)
             {
-                SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.position);
-
                 Projectile.damage = (int)(Projectile.damage * 1.5f);
 
-                for (float k = 0; k < 6.28f; k += 6.28f / 40)
+                if (!Main.dedServ)
                 {
-                    Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, Color.White.Alpha(), 2.5f);
-                    dust.noGravity = true;
+                    SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.position);
+                    for (float k = 0; k < 6.28f; k += 6.28f / 40)
+                    {
+                        Dust dust = Dust.NewDustPerfect(player.MountedCenter, DustID.DungeonWater, Vector2.One.RotatedBy(k) * 3.6f, 0, Color.White.Alpha(), 2.5f);
+                        dust.noGravity = true;
+                    }
                 }
             }
         }
@@ -172,7 +177,7 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
                 {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<WaterBurst>(), 0, 0, player.whoAmI);
 
-                    for (float k = 0; k < Main.rand.Next(9, 11); k++)
+                    for (float k = 0; k < Main.rand.Next(10, 13); k++)
                     {
                         Vector2 newVelocity = new(Main.rand.NextFloat(-5f, 5f), Main.rand.NextFloat(-18f, 9f));
 
@@ -181,8 +186,7 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
                             newVelocity = new Vector2(Projectile.velocity.X * 0.45f, Projectile.velocity.Y * 1.45f) + new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-8f, 5.5f));
                         }
 
-                        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, newVelocity, ProjectileType<WaterBoltGravity>(), (int)(Projectile.damage * 0.5f), 0, player.whoAmI, 3);
-                        proj.DamageType = DamageClass.Melee;
+                        var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, newVelocity, ProjectileType<WaterBoltGravity>(), (int)(Projectile.damage * 0.75f), 0, player.whoAmI, 3);
                         proj.netUpdate = true;
                     }
                 }
@@ -199,16 +203,10 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
             }
             else
             {
-                SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+                if (!Main.dedServ)
+                    SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
             }
         }
-
-        
-
-        /*public override void ApexEffect(Player player)
-        {
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, ProjectileID.WaterBolt, Projectile.damage, Projectile.knockBack, player.whoAmI);
-        }*/
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -276,11 +274,14 @@ namespace PacnyRefresh.Content.Dungeon.Items.BlueMoon
         {
             Projectile.CloneDefaults(ProjectileID.WaterBolt);
             AIType = ProjectileID.WaterBolt;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.ArmorPenetration = 10;
         }
         public override void AI()
         {
             Projectile.velocity.Y += 0.55f;
         }
+        public override void ModifyDamageHitbox(ref Rectangle hitbox) => hitbox.Inflate(4, 4);
     }
 
     public class BlueMoonSystem : ModSystem 
