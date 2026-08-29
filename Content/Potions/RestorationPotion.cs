@@ -34,7 +34,7 @@ namespace PacnyRefresh.Content.Potions
     public class RestorationPotionItem : GlobalItem
     {
         const int LesserRestoreAmount = 75;
-        const int RestoreAmount = 150;
+        const int RestoreAmount = 125;
         public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.LesserRestorationPotion || entity.type == ItemID.RestorationPotion;
 
         public override void Load() => On_Item.SetDefaults1 += LesserRestorationUnremover;
@@ -127,7 +127,6 @@ namespace PacnyRefresh.Content.Potions
                 .Register();
             Recipe.Create(ItemID.RestorationPotion, 2)
                 .AddIngredient(ItemID.LesserRestorationPotion, 2)
-                .AddIngredient(ItemID.GlowingMushroom, 1)
                 .AddRecipeGroup("PacnyRefresh:EvilMushroom")
                 .AddTile(TileID.Bottles)
                 .Register();

@@ -19,8 +19,8 @@ namespace PacnyRefresh.Content.Potions
 {
     public class GreaterRestorationPotion : ModItem
     {
-        const int GreaterRestoreAmount = 225;
-        public override bool IsLoadingEnabled(Mod mod) => false;
+        const int GreaterRestoreAmount = 175;
+        
         public override void SetStaticDefaults() 
         { 
             Item.ResearchUnlockCount = 30;
@@ -41,8 +41,8 @@ namespace PacnyRefresh.Content.Potions
 
         public override void AddRecipes()
         {
-            Recipe recipe = CreateRecipe(3)
-                .AddIngredient(ItemID.RestorationPotion, 3)
+            Recipe recipe = CreateRecipe(4)
+                .AddIngredient(ItemID.RestorationPotion, 4)
                 .AddIngredient(ItemID.Ectoplasm)
                 .AddTile(TileID.Bottles)
                 .Register();
