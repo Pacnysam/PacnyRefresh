@@ -145,8 +145,8 @@ namespace PacnyRefresh.Content.Underground.Items.GemStaves
             {
                 case ItemID.AmethystStaff:
                     {
-                        item.width = 30;
-                        item.height = 30;
+                        item.width = 32;
+                        item.height = 32;
 
                         item.damage = 13;
                         item.crit = 4;
