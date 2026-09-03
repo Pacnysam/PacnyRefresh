@@ -37,7 +37,20 @@ namespace PacnyRefresh.Core
             movementSpeed = 1f;
             stunned = false;
         }
-        
+
+        public override void ModifyShop(NPCShop shop)
+        {
+            switch (shop.NpcType)
+            {
+                case NPCID.WitchDoctor:
+                    {
+                        shop.InsertAfter(ItemID.VialofVenom, ItemID.LesserRestorationPotion, Condition.PreHardmode);
+                        shop.InsertAfter(ItemID.VialofVenom, ItemID.RestorationPotion, Condition.Hardmode);
+                        break;
+                    }
+            }
+        }
+
         public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
         {
             modifiers.FlatBonusDamage += damageModFlat;
